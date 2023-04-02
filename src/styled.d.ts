@@ -8,6 +8,8 @@ declare module 'styled-components' {
       secondary: string;
       background: string;
       headerBG: string;
+      white: string;
+      invoiceCardBG: string;
     };
   }
 }

@@ -76,5 +76,5 @@ export const BodyTextVariant = styled.p`
 
   letter-spacing: -0.1px;
 
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.secondary};
 `;

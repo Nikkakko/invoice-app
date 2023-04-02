@@ -1,15 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../app/store';
+import { InvoiceType } from '../types/dbTypes';
+import data from '../db/data.json';
 
 // Define a type for the slice state
 interface InitialStateTypes {
-  value: number;
+  invoices: InvoiceType[];
 }
 
 // Define the initial state using that type
 const initialState: InitialStateTypes = {
-  value: 0,
+  invoices: data,
 };
 
 export const invoiceSlice = createSlice({

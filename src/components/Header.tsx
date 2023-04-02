@@ -69,6 +69,15 @@ const LogoWrapper = styled.div`
 
 const LogoImage = styled.img`
   z-index: 1;
+
+  // make unselectable
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+
+  user-select: none;
 `;
 
 const ToggleThemeButton = styled.div`
@@ -79,7 +88,10 @@ const ToggleThemeButton = styled.div`
   gap: 24px;
 
   transition: all 0.3s ease-in-out;
-  cursor: pointer;
+
+  svg {
+    cursor: pointer;
+  }
 `;
 
 const UserMenu = styled.div`

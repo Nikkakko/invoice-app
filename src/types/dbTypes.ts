@@ -12,7 +12,7 @@ export interface Item {
   total: number;
 }
 
-export interface Invoice {
+export interface InvoiceType {
   id: string;
   createdAt: string;
   paymentDue: string;
