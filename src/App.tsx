@@ -1,43 +1,24 @@
-import styled from 'styled-components';
-import { Header, InvoiceCard, Invoices } from './components';
-import { useAppSelector } from './app/hooks';
+import {
+  Routes,
+  Route,
+  createRoutesFromElements,
+  createBrowserRouter,
+  RouterProvider,
+} from 'react-router-dom';
+import { Home, InvoiceDetail } from './pages';
+import RootLayout from './layout/RootLayout';
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path='/' element={<RootLayout />}>
+      <Route index element={<Home />} />
+      <Route path='invoice/:id' element={<InvoiceDetail />} />
+    </Route>
+  )
+);
 
 const App = () => {
-  const { invoices } = useAppSelector(state => state.invoice);
-  return (
-    <Container>
-      <Header />
-      <Main>
-        <Invoices />
-        {invoices.length === 0 && <p>No invoices</p>}
-        <InvocieWrapper>
-          {invoices.map(invoice => (
-            <InvoiceCard key={invoice.id} invoice={invoice} />
-          ))}
-        </InvocieWrapper>
-      </Main>
-    </Container>
-  );
+  return <RouterProvider router={router} />;
 };
-
-const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
-`;
-
-const Main = styled.main`
-  display: flex;
-  flex-direction: column;
-  /* align-items: center; */
-  padding: 32px 24px 105px 24px;
-`;
-
-const InvocieWrapper = styled.div`
-  margin-top: 32px;
-
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-`;
 
 export default App;

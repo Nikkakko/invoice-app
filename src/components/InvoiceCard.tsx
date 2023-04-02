@@ -67,14 +67,33 @@ const StatusText = styled(SmallHeadingVariant)<{ color: string }>`
   color: ${({ color }) =>
     color === 'paid' ? '#33D69F' : color === 'pending' ? '#F59E0B' : '#373B53'};
   z-index: 1;
+
+  &:before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background-color: ${({ color }) =>
+      color === 'paid'
+        ? '#33D69F'
+        : color === 'pending'
+        ? '#F59E0B'
+        : '#373B53'};
+  }
 `;
 
 const Status = styled.div<{
   status: string;
 }>`
   border-radius: 6px;
-  padding: 14px 30px 11px 30px;
+  padding: 14px 19px 11px 18px;
   position: relative;
+  width: 104px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:after {
     content: '';
