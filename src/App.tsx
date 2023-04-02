@@ -9,6 +9,7 @@ const App = () => {
       <Header />
       <Main>
         <Invoices />
+        {invoices.length === 0 && <p>No invoices</p>}
         <InvocieWrapper>
           {invoices.map(invoice => (
             <InvoiceCard key={invoice.id} invoice={invoice} />
@@ -27,6 +28,7 @@ const Container = styled.div`
 const Main = styled.main`
   display: flex;
   flex-direction: column;
+  /* align-items: center; */
   padding: 32px 24px 105px 24px;
 `;
 

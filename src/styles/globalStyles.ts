@@ -55,6 +55,8 @@ export const SmallHeadingVariant = styled.h3`
   /* identical to box height, or 100% */
   letter-spacing: -0.25px;
   color: ${({ theme }) => theme.colors.primary};
+  // make uppercase
+  text-transform: capitalize;
 `;
 
 export const BodyText = styled.p`
