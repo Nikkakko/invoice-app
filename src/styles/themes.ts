@@ -30,6 +30,7 @@ export const lightTheme = {
     primary: '#0C0E16',
     secondary: '#888EB0',
     background: '#F8F8FB',
+    headerBG: '#373B53',
   },
 };
 
@@ -39,5 +40,6 @@ export const darkTheme = {
     primary: '#FFFFFF',
     secondary: '#DFE3FA',
     background: '#141625',
+    headerBG: '#1E2139',
   },
 };

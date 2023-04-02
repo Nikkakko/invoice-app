@@ -11,6 +11,7 @@ export const GlobalStyles = createGlobalStyle`
     body{
         font-family: 'League Spartan', sans-serif;
         background-color: ${({ theme }) => theme.colors.background};
+        
 
     }
 `;
@@ -52,9 +53,7 @@ export const SmallHeadingVariant = styled.h3`
   font-size: 15px;
   line-height: 15px;
   /* identical to box height, or 100% */
-
   letter-spacing: -0.25px;
-
   color: ${({ theme }) => theme.colors.primary};
 `;
 
