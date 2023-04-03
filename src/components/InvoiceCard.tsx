@@ -6,14 +6,21 @@ import {
   SmallHeading,
   SmallHeadingVariant,
 } from '../styles/globalStyles';
+import { useNavigate } from 'react-router-dom';
 
 interface InvoiceCardProps {
   invoice: InvoiceType;
 }
 
 const InvoiceCard: FC<InvoiceCardProps> = ({ invoice }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/invoice/${invoice.id}`);
+  };
+
   return (
-    <Container>
+    <Container onClick={handleClick}>
       <ClientWrapper>
         <SmallHeadingVariant>
           <HashTag>#</HashTag>
@@ -41,6 +48,8 @@ const Container = styled.div`
   border-radius: 8px;
   padding: 25px 24px 22px 24px;
   width: 100%;
+
+  cursor: pointer;
 `;
 
 const HashTag = styled.span`

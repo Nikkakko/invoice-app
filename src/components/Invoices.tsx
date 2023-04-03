@@ -7,7 +7,7 @@ import {
   SmallHeadingVariant,
 } from '../styles/globalStyles';
 import ArrowDown from '../svgs/ArrowDown';
-import Button from './Button';
+import Button from './Buttons/Button';
 import { IconPlus } from '../assets';
 
 interface InvoicesProps {}

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styled from 'styled-components';
-import { BodyTextVariant } from '../styles/globalStyles';
+import { BodyTextVariant } from '../../styles/globalStyles';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
