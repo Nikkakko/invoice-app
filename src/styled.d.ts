@@ -10,6 +10,8 @@ declare module 'styled-components' {
       headerBG: string;
       white: string;
       invoiceCardBG: string;
+      bannerBG: string;
+      totalBG: string;
     };
   }
 }

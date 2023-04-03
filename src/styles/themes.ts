@@ -33,6 +33,8 @@ export const lightTheme = {
     headerBG: '#373B53',
     white: '#FFFFFF',
     invoiceCardBG: '#FFFFFF',
+    bannerBG: '#F9FAFE',
+    totalBG: '#373B53',
   },
 };
 
@@ -45,5 +47,7 @@ export const darkTheme = {
     headerBG: '#1E2139',
     white: '#FFFFFF',
     invoiceCardBG: '#1E2139',
+    bannerBG: '#252945',
+    totalBG: '#0C0E16',
   },
 };
