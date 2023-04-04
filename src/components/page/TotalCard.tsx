@@ -26,8 +26,8 @@ const TotalCard: FC<TotalCardProps> = ({ invoice }) => {
   return (
     <Container>
       <TotalWrapper>
-        {invoice.map(item => (
-          <BannerDesign>
+        {invoice.map((item, idx) => (
+          <BannerDesign key={idx}>
             <Banner>
               <SmallHeadingVariant>{item.name}</SmallHeadingVariant>
 

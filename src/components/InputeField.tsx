@@ -1,19 +1,22 @@
 import React, { forwardRef, FC } from 'react';
 import styled from 'styled-components';
-import { BodyTextVariant } from '../styles/globalStyles';
+import { CalendarIcon } from '../assets';
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  padding?: string;
+  width?: string;
 }
 
 const InputField: FC<InputFieldProps> = forwardRef<
   HTMLInputElement,
   InputFieldProps
->(({ label, name, ...rest }, ref) => {
+>(({ label, name, padding, width, ...rest }, ref) => {
   return (
     <FormGroup>
       {label && <Label htmlFor={name}>{label}</Label>}
-      <Input ref={ref} name={name} {...rest} />
+      <Input ref={ref} name={name} {...rest} padding={padding} width={width} />
+      {name === 'invoiceDate' && <CalendarImg src={CalendarIcon} />}
     </FormGroup>
   );
 });
@@ -22,16 +25,23 @@ const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 9px;
+  position: relative;
 `;
 
-const Input = styled.input`
-  background: ${({ theme }) => theme.colors.inputBG};
+const Input = styled.input<{
+  name: string | undefined;
+  padding?: string | undefined;
+  width?: string | undefined;
+}>`
   color: ${({ theme }) => theme.colors.primary};
-  border: 1px solid ${({ theme }) => theme.colors.inputBorder};
   border-radius: 4px;
+  background: ${({ name, theme }) =>
+    name === 'total' ? 'none' : theme.colors.inputBG};
+  border: ${({ name, theme }) =>
+    name === 'total' ? 'none' : `1px solid ${theme.colors.inputBorder}`};
 
   padding: 18px 0px 15px 20px;
-  width: 100%;
+  width: ${({ width }) => (width ? width : '100%')};
 
   /* FONTS */
   font-weight: 700;
@@ -44,6 +54,8 @@ const Input = styled.input`
   &:focus {
     outline: none;
   }
+
+  cursor: ${({ readOnly }) => (readOnly ? 'not-allowed' : 'pointer')};
 `;
 
 const Label = styled.label`
@@ -57,6 +69,12 @@ const Label = styled.label`
   /* 07 */
 
   color: ${({ theme }) => theme.colors.paragraph};
+`;
+
+const CalendarImg = styled.img`
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
 `;
 
 export default InputField;

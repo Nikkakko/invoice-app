@@ -4,3 +4,6 @@ export { default as MoonIcon } from './icon-moon.svg';
 export { default as SunIcon } from './icon-sun.svg';
 export { default as IconPlus } from './icon-plus.svg';
 export { default as ArrowLeft } from './icon-arrow-left.svg';
+export { default as CalendarIcon } from './icon-calendar.svg';
+export { default as DeleteIcon } from './icon-delete.svg';
+export { default as IconDelete } from './icon-delete.svg';
