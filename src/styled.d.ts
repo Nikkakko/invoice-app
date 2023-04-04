@@ -12,6 +12,9 @@ declare module 'styled-components' {
       invoiceCardBG: string;
       bannerBG: string;
       totalBG: string;
+      inputBG: string;
+      inputBorder: string;
+      paragraph: string;
     };
   }
 }

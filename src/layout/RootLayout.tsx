@@ -23,6 +23,8 @@ const Main = styled.main`
   flex-direction: column;
   /* align-items: center; */
   padding: 32px 24px 105px 24px;
+
+  position: relative;
 `;
 
 export default RootLayout;

@@ -27,22 +27,20 @@ const TotalCard: FC<TotalCardProps> = ({ invoice }) => {
     <Container>
       <TotalWrapper>
         {invoice.map(item => (
-          <>
-            <BannerDesign>
-              <Banner>
-                <SmallHeadingVariant>{item.name}</SmallHeadingVariant>
+          <BannerDesign>
+            <Banner>
+              <SmallHeadingVariant>{item.name}</SmallHeadingVariant>
 
-                <PriceText>
-                  {item.quantity} x {formatPrice(item.price)}
-                </PriceText>
-              </Banner>
-              <Price>
-                <SmallHeadingVariant>
-                  {formatPrice(item.total)}
-                </SmallHeadingVariant>
-              </Price>
-            </BannerDesign>
-          </>
+              <PriceText>
+                {item.quantity} x {formatPrice(item.price)}
+              </PriceText>
+            </Banner>
+            <Price>
+              <SmallHeadingVariant>
+                {formatPrice(item.total)}
+              </SmallHeadingVariant>
+            </Price>
+          </BannerDesign>
         ))}
       </TotalWrapper>
       <GrandTotal>

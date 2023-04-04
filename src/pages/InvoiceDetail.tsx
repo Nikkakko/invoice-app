@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppSelector } from '../app/hooks';
 import styled from 'styled-components';
-import { ArrowLeft } from '../assets';
+
 import GoBack from '../components/Buttons/GoBack';
 import { BodyTextVariant, SmallHeadingVariant } from '../styles/globalStyles';
 import { DetailClient } from '../components';
@@ -11,15 +11,9 @@ const InvoiceDetail = () => {
   const { invoices } = useAppSelector(state => state.invoice);
   const { id } = useParams();
   const currentInvoice = invoices.find(invoice => invoice.id === id);
-  const navigate = useNavigate();
-  const handleClick = () => {
-    // navigate back
-    navigate(-1);
-  };
 
   return (
     <Container>
-      <GoBack title='Go Back' onClick={handleClick} icon={ArrowLeft} />
       {currentInvoice && (
         <>
           <StatusCard>

@@ -35,6 +35,9 @@ export const lightTheme = {
     invoiceCardBG: '#FFFFFF',
     bannerBG: '#F9FAFE',
     totalBG: '#373B53',
+    inputBG: '#FFFFFF',
+    inputBorder: '#DFE3FA',
+    paragraph: '#7E88C3',
   },
 };
 
@@ -49,5 +52,8 @@ export const darkTheme = {
     invoiceCardBG: '#1E2139',
     bannerBG: '#252945',
     totalBG: '#0C0E16',
+    inputBG: '#1E2139',
+    inputBorder: '#252945',
+    paragraph: '#888EB0',
   },
 };
