@@ -38,6 +38,7 @@ export const lightTheme = {
     inputBG: '#FFFFFF',
     inputBorder: '#DFE3FA',
     paragraph: '#7E88C3',
+    editBG: '#FFFFFF',
   },
 };
 
@@ -55,5 +56,6 @@ export const darkTheme = {
     inputBG: '#1E2139',
     inputBorder: '#252945',
     paragraph: '#888EB0',
+    editBG: '#141625',
   },
 };

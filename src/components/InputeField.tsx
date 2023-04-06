@@ -32,6 +32,7 @@ const Input = styled.input<{
   name: string | undefined;
   padding?: string | undefined;
   width?: string | undefined;
+  type?: string | undefined;
 }>`
   color: ${({ theme }) => theme.colors.primary};
   border-radius: 4px;
@@ -55,7 +56,14 @@ const Input = styled.input<{
     outline: none;
   }
 
+  //remove arrow from number input
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+
   cursor: ${({ readOnly }) => (readOnly ? 'not-allowed' : 'pointer')};
+
+  //customize type date input
 `;
 
 const Label = styled.label`

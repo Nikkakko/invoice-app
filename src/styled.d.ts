@@ -15,6 +15,7 @@ declare module 'styled-components' {
       inputBG: string;
       inputBorder: string;
       paragraph: string;
+      editBG: string;
     };
   }
 }

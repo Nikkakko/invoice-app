@@ -16,6 +16,7 @@ const RootLayout = () => {
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
+  /* background: ${({ theme }) => theme.colors.white}; */
 `;
 
 const Main = styled.main`
@@ -23,6 +24,7 @@ const Main = styled.main`
   flex-direction: column;
   /* align-items: center; */
   padding: 32px 24px 105px 24px;
+  background: ${({ theme }) => theme.colors.editBG};
 
   position: relative;
 `;
