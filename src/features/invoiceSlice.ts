@@ -86,7 +86,15 @@ export const invoiceSlice = createSlice({
         findInvoice.clientAddress.country = clientCountry;
 
         // items
-        findInvoice.items = items;
+        findInvoice.items = findInvoice.items.map((item, index) => {
+          return {
+            ...item,
+            name: items[index].name,
+            quantity: items[index].quantity,
+            price: items[index].price,
+            total: items[index].quantity * items[index].price,
+          };
+        });
       }
     },
   },

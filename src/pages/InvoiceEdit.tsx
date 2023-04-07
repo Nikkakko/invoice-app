@@ -4,40 +4,24 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { SmallHeadingVariant } from '../styles/globalStyles';
 import InputeField from '../components/InputeField';
-import { useForm, useFieldArray } from 'react-hook-form';
+import {
+  useForm,
+  useFieldArray,
+  Controller,
+  useWatch,
+  Control,
+} from 'react-hook-form';
 import { IconDelete, IconPlus } from '../assets';
 import { addNewItem, updateInputs } from '../features/invoiceSlice';
+import { InputProps } from '../types/dbTypes';
 
 interface InvoiceEditProps {}
-type InputProps = {
-  streetAddress: string;
-  fromCity: string;
-  postCode: string;
-  country: string;
-  clientName: string;
-  clientEmail: string;
-  clientStreetAddress: string;
-  clientCity: string;
-  clientPostCode: string;
-  clientCountry: string;
-  invoiceDate: string;
-  paymentDue: string;
-  projectDescription: string;
-  paymentTerms: string;
-  items: {
-    name: string;
-    quantity: number;
-    price: number;
-    total: number;
-  };
-};
 
 const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const { invoices } = useAppSelector(state => state.invoice);
   const currentInvoice = invoices.find(item => item.id === id);
-  const [total, setTotal] = useState(0);
 
   const { street, city, postCode, country } =
     currentInvoice?.senderAddress || {};
@@ -54,8 +38,9 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
     setValue,
     watch,
     control,
+    getValues,
     formState: { errors },
-  } = useForm({
+  } = useForm<InputProps>({
     defaultValues: {
       streetAddress: street,
       fromCity: city,
@@ -82,24 +67,25 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
   });
 
   const onSubmit = (data: InputProps) => {
-    dispatch(updateInputs({ id, item: data }));
+    // dispatch(updateInputs({ id, item: data }));
 
     console.log(data);
   };
 
-  useEffect(() => {
-    // update the defaultValues when data prop changes
-    setValue('items', currentInvoice?.items);
-  }, [setValue]);
+  useEffect(() => {}, []);
 
   const handleAddItem = (id: string) => {
     dispatch(addNewItem(id));
+
+    append({ name: '', quantity: 0, price: 0, total: 0 });
   };
 
-  const handleUpdateInput = () => {
-    console.log('update');
+  console.log(currentInvoice?.items, 'items from redux');
 
-    const items = watch('items');
+  const handleUpdateInput = () => {
+    const data = getValues();
+
+    dispatch(updateInputs({ id, item: data }));
   };
 
   return (
@@ -177,7 +163,6 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
           {...register('invoiceDate', { required: true })}
           label='Invoice Date'
           name='invoiceDate'
-          type='date'
         />
         <InputeField
           {...register('paymentTerms', { required: true })}
@@ -193,46 +178,53 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
 
       <ItemList>
         <ListTitle>Item List</ListTitle>
-        {fields.map((item, index) => (
-          <Item key={item.id}>
-            <ItemWrapper>
+        <Item>
+          {fields?.map((item, index) => (
+            <ItemWrapper key={index}>
               <InputeField
-                {...register(`items.${index}.name` as const, {
-                  required: true,
-                })}
+                {...register(`items.${index}.name`, { required: true })}
                 label='Item Name'
-                name={`items.${index}.name` as const}
+                name={`items.${index}.name`}
               />
 
               <InputeField
-                {...register(`items.${index}.quantity` as const, {
+                {...register(`items.${index}.quantity`, {
                   required: true,
+                  valueAsNumber: true,
                 })}
                 label='Quantity'
-                name={`items.${index}.quantity` as const}
+                name={`items.${index}.quantity`}
                 type='number'
               />
 
               <InputeField
-                {...register(`items.${index}.price` as const, {
+                {...register(`items.${index}.price`, {
                   required: true,
+                  valueAsNumber: true,
                 })}
                 label='Price'
-                name={`items.${index}.price` as const}
+                name={`items.${index}.price`}
                 type='number'
               />
 
-              <InputeField
-                {...register(`items.${index}.total` as const, {
-                  required: true,
-                })}
-                label='Total'
-                name={`items.${index}.total` as const}
-                type='number'
-              />
+              <PriceBox>
+                <TotalValue>Total</TotalValue>
+                <TotalPrice>
+                  {
+                    // check if is Nan
+                    isNaN(
+                      watch(`items.${index}.price`) *
+                        watch(`items.${index}.quantity`)
+                    )
+                      ? 0
+                      : watch(`items.${index}.price`) *
+                        watch(`items.${index}.quantity`)
+                  }
+                </TotalPrice>
+              </PriceBox>
             </ItemWrapper>
-          </Item>
-        ))}
+          ))}
+        </Item>
       </ItemList>
       <AddneItem>
         <AddneItemBtn onClick={() => handleAddItem(currentInvoice?.id || '')}>

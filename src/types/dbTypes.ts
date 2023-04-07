@@ -26,3 +26,26 @@ export interface InvoiceType {
   items: Item[];
   total: number;
 }
+
+export type InputProps = {
+  streetAddress: string;
+  fromCity: string;
+  postCode: string;
+  country: string;
+  clientName: string;
+  clientEmail: string;
+  clientStreetAddress: string;
+  clientCity: string;
+  clientPostCode: string;
+  clientCountry: string;
+  invoiceDate: string;
+  paymentDue: string;
+  projectDescription: string;
+  paymentTerms: number;
+  items: {
+    name: string;
+    quantity: number;
+    price: number;
+    total: number;
+  }[];
+};
