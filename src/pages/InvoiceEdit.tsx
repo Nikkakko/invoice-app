@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -9,7 +9,28 @@ import { IconDelete, IconPlus } from '../assets';
 import { addNewItem, updateInputs } from '../features/invoiceSlice';
 
 interface InvoiceEditProps {}
-type InputProps = {};
+type InputProps = {
+  streetAddress: string;
+  fromCity: string;
+  postCode: string;
+  country: string;
+  clientName: string;
+  clientEmail: string;
+  clientStreetAddress: string;
+  clientCity: string;
+  clientPostCode: string;
+  clientCountry: string;
+  invoiceDate: string;
+  paymentDue: string;
+  projectDescription: string;
+  paymentTerms: string;
+  items: {
+    name: string;
+    quantity: number;
+    price: number;
+    total: number;
+  };
+};
 
 const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
   const dispatch = useAppDispatch();
@@ -32,6 +53,7 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -50,27 +72,34 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
       projectDescription: currentInvoice?.description,
       paymentTerms: currentInvoice?.paymentTerms,
 
-      items: currentInvoice?.items.map(item => ({
-        itemName: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        total: item.total,
-      })),
+      items: currentInvoice?.items,
     },
   });
 
-  const onSubmit = (data: any) => {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'items',
+  });
+
+  const onSubmit = (data: InputProps) => {
     dispatch(updateInputs({ id, item: data }));
 
     console.log(data);
   };
+
+  useEffect(() => {
+    // update the defaultValues when data prop changes
+    setValue('items', currentInvoice?.items);
+  }, [setValue]);
 
   const handleAddItem = (id: string) => {
     dispatch(addNewItem(id));
   };
 
   const handleUpdateInput = () => {
-    handleSubmit(onSubmit)();
+    console.log('update');
+
+    const items = watch('items');
   };
 
   return (
@@ -164,53 +193,43 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
 
       <ItemList>
         <ListTitle>Item List</ListTitle>
-        {currentInvoice?.items.map((item, idx) => (
-          <Item key={idx}>
-            <InputeField
-              {...register(`items.${idx}.itemName`, { required: true })}
-              label='Item Name'
-              name={`items.${idx}.itemName`}
-            />
+        {fields.map((item, index) => (
+          <Item key={item.id}>
             <ItemWrapper>
               <InputeField
-                {...register(`items.${idx}.quantity`, { required: true })}
+                {...register(`items.${index}.name` as const, {
+                  required: true,
+                })}
+                label='Item Name'
+                name={`items.${index}.name` as const}
+              />
+
+              <InputeField
+                {...register(`items.${index}.quantity` as const, {
+                  required: true,
+                })}
                 label='Quantity'
-                name={`items.${idx}.quantity`}
+                name={`items.${index}.quantity` as const}
                 type='number'
               />
 
               <InputeField
-                {...register(`items.${idx}.price`, { required: true })}
+                {...register(`items.${index}.price` as const, {
+                  required: true,
+                })}
                 label='Price'
-                name={`items.${idx}.price`}
+                name={`items.${index}.price` as const}
                 type='number'
               />
 
-              {/* <InputeField
-                {...register(`items.${idx}.total`, { required: true })}
+              <InputeField
+                {...register(`items.${index}.total` as const, {
+                  required: true,
+                })}
                 label='Total'
-                name='total'
+                name={`items.${index}.total` as const}
                 type='number'
-
-
-              /> */}
-
-              <PriceBox>
-                <TotalText>Total</TotalText>
-                <TotalPrice>
-                  <TotalValue>
-                    {isNaN(
-                      watch(`items.${idx}.quantity`) *
-                        watch(`items.${idx}.price`)
-                    )
-                      ? 0
-                      : watch(`items.${idx}.quantity`) *
-                        watch(`items.${idx}.price`)}
-                  </TotalValue>
-                </TotalPrice>
-              </PriceBox>
-
-              <DeleteImg src={IconDelete} alt='' />
+              />
             </ItemWrapper>
           </Item>
         ))}

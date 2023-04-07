@@ -67,6 +67,8 @@ export const invoiceSlice = createSlice({
         items,
       } = item;
 
+      console.log(item);
+
       if (findInvoice) {
         // loop and change
         findInvoice.createdAt = invoiceDate;
