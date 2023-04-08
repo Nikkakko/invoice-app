@@ -6,17 +6,30 @@ interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   padding?: string;
   width?: string;
+  error?: string;
 }
 
 const InputField: FC<InputFieldProps> = forwardRef<
   HTMLInputElement,
   InputFieldProps
->(({ label, name, padding, width, ...rest }, ref) => {
+>(({ label, name, padding, width, error, ...rest }, ref) => {
   return (
     <FormGroup>
-      {label && <Label htmlFor={name}>{label}</Label>}
-      <Input ref={ref} name={name} {...rest} padding={padding} width={width} />
-      {name === 'invoiceDate' && <CalendarImg src={CalendarIcon} />}
+      {label && (
+        <Label htmlFor={name} error={error ? true : false}>
+          {label}
+          {error && <Error>{error}</Error>}
+        </Label>
+      )}
+      <Input
+        ref={ref}
+        name={name}
+        {...rest}
+        padding={padding}
+        width={width}
+        error={error ? error : undefined}
+      />
+      {/* {name === 'invoiceDate' && <CalendarImg src={CalendarIcon} />} */}
     </FormGroup>
   );
 });
@@ -33,15 +46,21 @@ const Input = styled.input<{
   padding?: string | undefined;
   width?: string | undefined;
   type?: string | undefined;
+  error?: string | undefined;
 }>`
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme, name }) =>
+    name === 'total' ? theme.colors.secondary : theme.colors.primary};
   border-radius: 4px;
   background: ${({ name, theme }) =>
     name === 'total' ? 'none' : theme.colors.inputBG};
-  border: ${({ name, theme }) =>
-    name === 'total' ? 'none' : `1px solid ${theme.colors.inputBorder}`};
+  border: ${({ name, theme, error }) =>
+    name === 'total'
+      ? 'none'
+      : error
+      ? `1px solid #ec5757`
+      : `1px solid ${theme.colors.inputBorder}`};
 
-  padding: 18px 0px 15px 20px;
+  padding: ${({ padding }) => (padding ? padding : '18px 0px 15px 20px')};
   width: ${({ width }) => (width ? width : '100%')};
 
   /* FONTS */
@@ -64,9 +83,14 @@ const Input = styled.input<{
   cursor: ${({ readOnly }) => (readOnly ? 'not-allowed' : 'pointer')};
 
   //customize type date input
+  &::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 16px;
+    opacity: 0.5;
+  }
 `;
 
-const Label = styled.label`
+const Label = styled.label<{ error?: boolean }>`
   font-weight: 500;
   font-size: 13px;
   line-height: 15px;
@@ -76,7 +100,23 @@ const Label = styled.label`
 
   /* 07 */
 
-  color: ${({ theme }) => theme.colors.paragraph};
+  color: ${({ theme, error }) => (error ? '#ec5757' : theme.colors.paragraph)};
+
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Error = styled.span`
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 15px;
+  /* identical to box height, or 150% */
+
+  letter-spacing: -0.208333px;
+
+  /* 08 */
+
+  color: #ec5757;
 `;
 
 const CalendarImg = styled.img`

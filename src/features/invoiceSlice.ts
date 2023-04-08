@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../app/store';
-import { InvoiceType, Item } from '../types/dbTypes';
+import { InvoiceType, Item, InputProps } from '../types/dbTypes';
 import data from '../db/data.json';
 
 // Define a type for the slice state
@@ -44,9 +44,20 @@ export const invoiceSlice = createSlice({
       return state;
     },
 
+    deleteItem: (
+      state,
+      action: PayloadAction<{ id: string | undefined; index: number }>
+    ) => {
+      const { id, index } = action.payload;
+      const findInvoice = state.invoices.find(invoice => invoice.id === id);
+      if (findInvoice) {
+        findInvoice.items.splice(index, 1);
+      }
+    },
+
     updateInputs: (
       state,
-      action: PayloadAction<{ id: string | undefined; item: any }>
+      action: PayloadAction<{ id: string | undefined; item: InputProps }>
     ) => {
       const { id, item } = action.payload;
       const findInvoice = state.invoices.find(invoice => invoice.id === id);
@@ -54,7 +65,7 @@ export const invoiceSlice = createSlice({
         streetAddress,
         fromCity,
         postCode,
-        fromCountry,
+        country,
         clientName,
         clientEmail,
         clientStreetAddress,
@@ -67,8 +78,6 @@ export const invoiceSlice = createSlice({
         items,
       } = item;
 
-      console.log(item);
-
       if (findInvoice) {
         // loop and change
         findInvoice.createdAt = invoiceDate;
@@ -77,7 +86,7 @@ export const invoiceSlice = createSlice({
         findInvoice.senderAddress.street = streetAddress;
         findInvoice.senderAddress.city = fromCity;
         findInvoice.senderAddress.postCode = postCode;
-        findInvoice.senderAddress.country = fromCountry;
+        findInvoice.senderAddress.country = country;
         findInvoice.clientName = clientName;
         findInvoice.clientEmail = clientEmail;
         findInvoice.clientAddress.street = clientStreetAddress;
@@ -100,6 +109,7 @@ export const invoiceSlice = createSlice({
   },
 });
 
-export const { setisEditing, addNewItem, updateInputs } = invoiceSlice.actions;
+export const { setisEditing, addNewItem, updateInputs, deleteItem } =
+  invoiceSlice.actions;
 
 export default invoiceSlice.reducer;

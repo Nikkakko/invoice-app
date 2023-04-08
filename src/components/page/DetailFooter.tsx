@@ -5,9 +5,11 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { setisEditing } from '../../features/invoiceSlice';
 import { useNavigate, useParams } from 'react-router-dom';
 
-interface DetailFooterProps {}
+interface DetailFooterProps {
+  onSubmit: () => void;
+}
 
-const DetailFooter: FC<DetailFooterProps> = ({}) => {
+const DetailFooter: FC<DetailFooterProps> = ({ onSubmit }) => {
   const { isDarkMode } = useAppSelector(state => state.theme);
   const { isEditing } = useAppSelector(state => state.invoice);
   const dispatch = useAppDispatch();
@@ -21,6 +23,12 @@ const DetailFooter: FC<DetailFooterProps> = ({}) => {
     // navigate to edit page with the current invoice ID
     navigate(`/invoice/${id}/edit`);
     dispatch(setisEditing(true));
+  };
+
+  const handleSaveOrPaid = () => {
+    if (isEditing) {
+      onSubmit();
+    }
   };
 
   return (
@@ -45,6 +53,7 @@ const DetailFooter: FC<DetailFooterProps> = ({}) => {
         bgColor='#7C5DFA'
         color='#ffffff'
         padding='18px 28px 15px 27px'
+        onClick={handleSaveOrPaid}
       />
     </Container>
   );

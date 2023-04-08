@@ -14,7 +14,6 @@ const DetailLayout = () => {
   const handleClick = () => {
     // navigate back
     navigate(-1);
-
     // reset isEditing
     dispatch(setisEditing(false));
   };
@@ -24,7 +23,7 @@ const DetailLayout = () => {
       <Main>
         <Outlet />
       </Main>
-      <DetailFooter />
+      {/* <DetailFooter /> */}
     </Container>
   );
 };

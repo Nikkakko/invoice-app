@@ -7,20 +7,31 @@ import InputeField from '../components/InputeField';
 import {
   useForm,
   useFieldArray,
+  UseFormWatch,
   Controller,
-  useWatch,
-  Control,
 } from 'react-hook-form';
-import { IconDelete, IconPlus } from '../assets';
-import { addNewItem, updateInputs } from '../features/invoiceSlice';
+import { IconPlus } from '../assets';
+import {
+  addNewItem,
+  deleteItem,
+  setisEditing,
+  updateInputs,
+} from '../features/invoiceSlice';
 import { InputProps } from '../types/dbTypes';
+import DeleteIcon from '../svgs/DeleteIcon';
+import Calendar from 'react-calendar';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { SelectField } from '../components';
+import ArrowDown from '../svgs/ArrowDown';
+import DetailFooter from '../components/page/DetailFooter';
 
 interface InvoiceEditProps {}
 
 const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
-  const { invoices } = useAppSelector(state => state.invoice);
+  const { invoices, isEditing } = useAppSelector(state => state.invoice);
   const currentInvoice = invoices.find(item => item.id === id);
 
   const { street, city, postCode, country } =
@@ -38,6 +49,7 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
     setValue,
     watch,
     control,
+
     getValues,
     formState: { errors },
   } = useForm<InputProps>({
@@ -67,26 +79,39 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
   });
 
   const onSubmit = (data: InputProps) => {
-    // dispatch(updateInputs({ id, item: data }));
-
-    console.log(data);
+    handleUpdateInput();
   };
 
-  useEffect(() => {}, []);
+  const calculateTotal = (index: number, watch: UseFormWatch<InputProps>) => {
+    const price = watch(`items.${index}.price`);
+    const quantity = watch(`items.${index}.quantity`);
+    const total = price * quantity;
+
+    if (isNaN(price * quantity)) {
+      return 0;
+    } else {
+      return total.toFixed(2);
+    }
+  };
 
   const handleAddItem = (id: string) => {
     dispatch(addNewItem(id));
-
     append({ name: '', quantity: 0, price: 0, total: 0 });
   };
 
-  console.log(currentInvoice?.items, 'items from redux');
-
-  const handleUpdateInput = () => {
-    const data = getValues();
-
-    dispatch(updateInputs({ id, item: data }));
+  const handleDeleteItem = (id: string, index: number) => {
+    dispatch(deleteItem({ id, index }));
+    remove(index);
   };
+
+  function handleUpdateInput() {
+    const data = getValues();
+    dispatch(updateInputs({ id, item: data }));
+  }
+
+  useEffect(() => {
+    dispatch(setisEditing(true));
+  }, []);
 
   return (
     <Container>
@@ -99,102 +124,141 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
       <BillForm>
         <SubTitle>Bill From</SubTitle>
         <InputeField
-          {...register('streetAddress', { required: true })}
+          {...register('streetAddress', {
+            required: "can't be empty",
+          })}
           label='Street Address'
           name='streetAddress'
+          error={errors.streetAddress?.message}
         />
         <CityCode>
           <InputeField
-            {...register('fromCity', { required: true })}
+            {...register('fromCity', { required: "can't be empty" })}
             label='City'
             name='fromCity'
+            error={errors.fromCity?.message}
           />
           <InputeField
-            {...register('postCode', { required: true })}
+            {...register('postCode', { required: "can't be empty" })}
             label='Post Code'
             name='postCode'
+            error={errors.postCode?.message}
           />
         </CityCode>
         <CountryCode>
           <InputeField
-            {...register('country', { required: true })}
+            {...register('country', { required: "can't be empty" })}
             label='Country'
             name='fromCountry'
+            error={errors.country?.message}
           />
         </CountryCode>
       </BillForm>
       <BillTo>
         <SubTitle>Bill To</SubTitle>
         <InputeField
-          {...register('clientName', { required: true })}
+          {...register('clientName', { required: "can't be empty" })}
           label='Client Name'
           name='clientName'
+          error={errors.clientName?.message}
         />
         <InputeField
-          {...register('clientEmail', { required: true })}
+          {...register('clientEmail', { required: "can't be empty" })}
           label='Client Email'
           name='clientEmail'
+          error={errors.clientEmail?.message}
         />
         <InputeField
-          {...register('clientStreetAddress', { required: true })}
+          {...register('clientStreetAddress', { required: "can't be empty" })}
           label='Street Address'
           name='clientStreetAddress'
+          error={errors.clientStreetAddress?.message}
         />
         <CityCode>
           <InputeField
-            {...register('clientCity', { required: true })}
+            {...register('clientCity', { required: "can't be empty" })}
             label='City'
             name='clientCity'
+            error={errors.clientCity?.message}
           />
           <InputeField
-            {...register('clientPostCode', { required: true })}
+            {...register('clientPostCode', { required: "can't be empty" })}
             label='Post Code'
             name='clientPostCode'
+            error={errors.clientPostCode?.message}
           />
         </CityCode>
         <CountryCode>
           <InputeField
-            {...register('clientCountry', { required: true })}
+            {...register('clientCountry', { required: "can't be empty" })}
             label='Country'
             name='clientCountry'
+            error={errors.clientCountry?.message}
           />
         </CountryCode>
         <InputeField
-          {...register('invoiceDate', { required: true })}
+          {...register('invoiceDate', {
+            required: "can't be empty",
+          })}
           label='Invoice Date'
           name='invoiceDate'
+          error={errors.invoiceDate?.message}
+          type='date'
         />
+
+        <SelectGroup>
+          <SelectLabel>Payment Terms</SelectLabel>
+          <Select
+            {...register('paymentTerms', {
+              required: "can't be empty",
+              valueAsNumber: true,
+            })}
+            name='paymentTerms'
+            defaultValue={currentInvoice?.paymentTerms}
+          >
+            <Option value={currentInvoice?.paymentTerms}>
+              Net {currentInvoice?.paymentTerms} Days
+            </Option>
+            <Option value='1'>Net 1 Day</Option>
+            <Option value='7'>Net 7 Day</Option>
+            <Option value='14'>Net 14 Day</Option>
+            <Option value='30'>Net 30 Day</Option>
+          </Select>
+          <ArrowDown />
+          {errors.paymentTerms?.message && (
+            <span>{errors.paymentTerms?.message}</span>
+          )}
+        </SelectGroup>
         <InputeField
-          {...register('paymentTerms', { required: true })}
-          label='Payment Terms'
-          name='paymentDue'
-        />
-        <InputeField
-          {...register('projectDescription', { required: true })}
+          {...register('projectDescription', { required: "can't be empty" })}
           label='Project Description'
           name='projectDescription'
+          error={errors.projectDescription?.message}
         />
       </BillTo>
 
       <ItemList>
         <ListTitle>Item List</ListTitle>
-        <Item>
-          {fields?.map((item, index) => (
-            <ItemWrapper key={index}>
-              <InputeField
-                {...register(`items.${index}.name`, { required: true })}
-                label='Item Name'
-                name={`items.${index}.name`}
-              />
+        {fields?.map((item, index) => (
+          <Item key={index}>
+            <InputeField
+              {...register(`items.${index}.name`, {
+                required: "can't be empty",
+              })}
+              label='Item Name'
+              name={`items.${index}.name`}
+            />
 
+            <ItemWrapper>
               <InputeField
                 {...register(`items.${index}.quantity`, {
                   required: true,
                   valueAsNumber: true,
                 })}
-                label='Quantity'
+                label='Qty.'
                 name={`items.${index}.quantity`}
                 type='number'
+                width='64px'
               />
 
               <InputeField
@@ -205,35 +269,41 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
                 label='Price'
                 name={`items.${index}.price`}
                 type='number'
+                width='100px'
               />
 
-              <PriceBox>
-                <TotalValue>Total</TotalValue>
-                <TotalPrice>
-                  {
-                    // check if is Nan
-                    isNaN(
-                      watch(`items.${index}.price`) *
-                        watch(`items.${index}.quantity`)
-                    )
-                      ? 0
-                      : watch(`items.${index}.price`) *
-                        watch(`items.${index}.quantity`)
-                  }
-                </TotalPrice>
-              </PriceBox>
+              <InputeField
+                {...register(`items.${index}.total`, {
+                  required: true,
+                  valueAsNumber: true,
+                })}
+                label='Total'
+                name='total'
+                type='number'
+                value={calculateTotal(index, watch)}
+                disabled
+                width='100px'
+              />
+              <DeleteIcon
+                onClick={() =>
+                  handleDeleteItem(currentInvoice?.id || '', index)
+                }
+              />
             </ItemWrapper>
-          ))}
-        </Item>
+          </Item>
+        ))}
       </ItemList>
       <AddneItem>
         <AddneItemBtn onClick={() => handleAddItem(currentInvoice?.id || '')}>
           <img src={IconPlus} alt='' />
           Add New Item
         </AddneItemBtn>
-        <button onClick={handleUpdateInput}>save changes</button>
       </AddneItem>
       <GrayContainer />
+      <DetailFooter
+      onSubmit={handleSubmit(onSubmit)}
+
+      />
     </Container>
   );
 };
@@ -244,34 +314,11 @@ const Container = styled.div`
   margin-top: 26px;
 `;
 
-const PriceBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  margin-left: 0;
-`;
-
-const TotalValue = styled(SmallHeadingVariant)`
-  color: ${({ theme }) => theme.colors.secondary};
-`;
-
-const TotalPrice = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 18px 0px 15px 0px;
-`;
-const TotalText = styled.span`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 15px;
-  /* identical to box height, or 115% */
-
-  letter-spacing: -0.1px;
-
-  /* 07 */
-
-  color: ${({ theme }) => theme.colors.paragraph};
+const StyledCalendar = styled(Calendar)`
+  width: 300px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  padding: 16px;
 `;
 
 const GrayContainer = styled.div`
@@ -306,7 +353,6 @@ const Title = styled.h1`
 const SubTitle = styled(SmallHeadingVariant)`
   color: #7c5dfa;
   margin-bottom: 24px;
-  /* width: 100%; */
 `;
 
 const ListTitle = styled.h2`
@@ -367,7 +413,9 @@ const Item = styled.div`
 const ItemWrapper = styled.div`
   display: flex;
   align-items: center;
+  //gap not last child
   gap: 16px;
+
   margin-top: 25px;
 
   // select img and align it to flex end
@@ -409,7 +457,70 @@ const AddneItemBtn = styled.button`
   }
 `;
 
-const DeleteImg = styled.img`
-  cursor: pointer;
+const SelectGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+
+  width: 100%;
+  position: relative;
+
+  svg {
+    position: absolute;
+    right: 16px;
+    top: 60%;
+  }
 `;
+
+const SelectLabel = styled.label`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 15px;
+  /* identical to box height, or 115% */
+
+  letter-spacing: -0.1px;
+
+  /* 07 */
+
+  color: ${({ theme }) => theme.colors.secondary};
+`;
+
+const Select = styled.select<{
+  name: string;
+  error?: boolean;
+}>`
+  width: 100%;
+  padding: 16px;
+
+  border: ${({ name, theme, error }) =>
+    name === 'total'
+      ? 'none'
+      : error
+      ? `1px solid #ec5757`
+      : `1px solid ${theme.colors.inputBorder}`};
+
+  //remove arrow
+  -webkit-appearance: none;
+
+  border-radius: 4px;
+
+  &:focus {
+    outline: none;
+  }
+
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 15px;
+  /* identical to box height, or 100% */
+
+  letter-spacing: -0.25px;
+
+  /* 08 */
+
+  color: ${({ theme }) => theme.colors.primary};
+`;
+
+const Option = styled.option``;
+
 export default InvoiceEdit;
