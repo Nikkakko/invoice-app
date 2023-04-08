@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { SmallHeadingVariant } from '../styles/globalStyles';
@@ -14,17 +14,17 @@ import { IconPlus } from '../assets';
 import {
   addNewItem,
   deleteItem,
+  saveInvoice,
   setisEditing,
   updateInputs,
 } from '../features/invoiceSlice';
 import { InputProps } from '../types/dbTypes';
 import DeleteIcon from '../svgs/DeleteIcon';
 import Calendar from 'react-calendar';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { SelectField } from '../components';
 import ArrowDown from '../svgs/ArrowDown';
 import DetailFooter from '../components/page/DetailFooter';
+import { SelectField } from '../components';
 
 interface InvoiceEditProps {}
 
@@ -32,7 +32,12 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const { invoices, isEditing } = useAppSelector(state => state.invoice);
+  const [itemError, setItemError] = useState<boolean>(false);
   const currentInvoice = invoices.find(item => item.id === id);
+  const location = useLocation();
+  const currentLocation = location.pathname.split('/')[2];
+
+  //get current path
 
   const { street, city, postCode, country } =
     currentInvoice?.senderAddress || {};
@@ -68,7 +73,6 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
       paymentDue: currentInvoice?.paymentDue,
       projectDescription: currentInvoice?.description,
       paymentTerms: currentInvoice?.paymentTerms,
-
       items: currentInvoice?.items,
     },
   });
@@ -79,7 +83,11 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
   });
 
   const onSubmit = (data: InputProps) => {
-    handleUpdateInput();
+    if (isEditing) {
+      handleUpdateInput();
+    } else {
+      handleSaveInvoice();
+    }
   };
 
   const calculateTotal = (index: number, watch: UseFormWatch<InputProps>) => {
@@ -109,16 +117,22 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
     dispatch(updateInputs({ id, item: data }));
   }
 
+  function handleSaveInvoice() {
+    const data = getValues();
+    dispatch(saveInvoice({ item: data }));
+  }
+
   useEffect(() => {
-    dispatch(setisEditing(true));
+    if (currentLocation !== 'new') {
+      dispatch(setisEditing(true));
+    }
   }, []);
 
   return (
     <Container>
       <TitleWrapper>
         <Title>
-          Edit <HashTag>#</HashTag>
-          {currentInvoice?.id}
+          {isEditing ? `Edit #${currentInvoice?.id}` : 'New Invoice'}
         </Title>
       </TitleWrapper>
       <BillForm>
@@ -149,7 +163,7 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
           <InputeField
             {...register('country', { required: "can't be empty" })}
             label='Country'
-            name='fromCountry'
+            name='country'
             error={errors.country?.message}
           />
         </CountryCode>
@@ -196,6 +210,7 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
             error={errors.clientCountry?.message}
           />
         </CountryCode>
+
         <InputeField
           {...register('invoiceDate', {
             required: "can't be empty",
@@ -207,7 +222,12 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
         />
 
         <SelectGroup>
-          <SelectLabel>Payment Terms</SelectLabel>
+          <SelectLabel error={!!errors.paymentTerms?.message}>
+            Payment Terms
+            {errors.paymentTerms?.message && (
+              <Error>{errors.paymentTerms?.message}</Error>
+            )}
+          </SelectLabel>
           <Select
             {...register('paymentTerms', {
               required: "can't be empty",
@@ -215,8 +235,10 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
             })}
             name='paymentTerms'
             defaultValue={currentInvoice?.paymentTerms}
+            //make error boolean
+            error={!!errors.paymentTerms?.message}
           >
-            <Option value={currentInvoice?.paymentTerms}>
+            <Option value={currentInvoice?.paymentTerms || ''}>
               Net {currentInvoice?.paymentTerms} Days
             </Option>
             <Option value='1'>Net 1 Day</Option>
@@ -224,11 +246,10 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
             <Option value='14'>Net 14 Day</Option>
             <Option value='30'>Net 30 Day</Option>
           </Select>
+
           <ArrowDown />
-          {errors.paymentTerms?.message && (
-            <span>{errors.paymentTerms?.message}</span>
-          )}
         </SelectGroup>
+
         <InputeField
           {...register('projectDescription', { required: "can't be empty" })}
           label='Project Description'
@@ -236,7 +257,6 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
           error={errors.projectDescription?.message}
         />
       </BillTo>
-
       <ItemList>
         <ListTitle>Item List</ListTitle>
         {fields?.map((item, index) => (
@@ -247,29 +267,32 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
               })}
               label='Item Name'
               name={`items.${index}.name`}
+              error={errors.items?.[index]?.name?.message}
             />
 
             <ItemWrapper>
               <InputeField
                 {...register(`items.${index}.quantity`, {
-                  required: true,
+                  required: "can't be empty",
                   valueAsNumber: true,
                 })}
                 label='Qty.'
                 name={`items.${index}.quantity`}
                 type='number'
                 width='64px'
+                error={errors.items?.[index]?.quantity?.message}
               />
 
               <InputeField
                 {...register(`items.${index}.price`, {
-                  required: true,
+                  required: "can't be empty",
                   valueAsNumber: true,
                 })}
                 label='Price'
                 name={`items.${index}.price`}
                 type='number'
                 width='100px'
+                error={errors.items?.[index]?.price?.message}
               />
 
               <InputeField
@@ -278,11 +301,12 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
                   valueAsNumber: true,
                 })}
                 label='Total'
-                name='total'
+                name={`items.${index}.total`}
                 type='number'
                 value={calculateTotal(index, watch)}
                 disabled
                 width='100px'
+                error={errors.items?.[index]?.total?.message}
               />
               <DeleteIcon
                 onClick={() =>
@@ -300,10 +324,13 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
         </AddneItemBtn>
       </AddneItem>
       <GrayContainer />
-      <DetailFooter
-      onSubmit={handleSubmit(onSubmit)}
 
-      />
+      {itemError && fields.length === 0 && (
+        <Error style={{ position: 'absolute', bottom: '100px' }}>
+          Please add at least one item
+        </Error>
+      )}
+      <DetailFooter onSubmit={handleSubmit(onSubmit)} />
     </Container>
   );
 };
@@ -472,8 +499,9 @@ const SelectGroup = styled.div`
   }
 `;
 
-const SelectLabel = styled.label`
-  font-style: normal;
+const SelectLabel = styled.label<{
+  error?: boolean;
+}>`
   font-weight: 500;
   font-size: 13px;
   line-height: 15px;
@@ -483,7 +511,10 @@ const SelectLabel = styled.label`
 
   /* 07 */
 
-  color: ${({ theme }) => theme.colors.secondary};
+  color: ${({ theme, error }) => (error ? '#ec5757' : theme.colors.paragraph)};
+
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Select = styled.select<{
@@ -519,6 +550,21 @@ const Select = styled.select<{
   /* 08 */
 
   color: ${({ theme }) => theme.colors.primary};
+
+  background: ${({ theme }) => theme.colors.inputBG} !important;
+`;
+
+const Error = styled.span`
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 15px;
+  /* identical to box height, or 150% */
+
+  letter-spacing: -0.208333px;
+
+  /* 08 */
+
+  color: #ec5757;
 `;
 
 const Option = styled.option``;

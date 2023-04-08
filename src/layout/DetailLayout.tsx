@@ -30,6 +30,8 @@ const DetailLayout = () => {
 
 const Container = styled.div``;
 
-const Main = styled.main``;
+const Main = styled.main`
+  /* margin-top: 26px; */
+`;
 
 export default DetailLayout;

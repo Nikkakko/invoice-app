@@ -25,6 +25,8 @@ const Button: FC<ButtonProps> = ({
         color: color,
         borderRadius: radius,
       }}
+      {...props}
+      onClick={props.onClick}
     >
       {icon && (
         <IconWrapper>

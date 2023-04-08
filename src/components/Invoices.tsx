@@ -9,12 +9,18 @@ import {
 import ArrowDown from '../svgs/ArrowDown';
 import Button from './Buttons/Button';
 import { IconPlus } from '../assets';
+import { useNavigate } from 'react-router-dom';
 
 interface InvoicesProps {}
 
 const Invoices: FC<InvoicesProps> = ({}) => {
   const { invoices } = useAppSelector(state => state.invoice);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const handleNewInvoice = () => {
+    navigate('/invoice/new');
+  };
 
   return (
     <Container>
@@ -31,7 +37,7 @@ const Invoices: FC<InvoicesProps> = ({}) => {
 
         <Button
           title='New'
-          onClick={() => {}}
+          onClick={handleNewInvoice}
           icon={IconPlus}
           bg='#7C5DFA'
           color='#fff'

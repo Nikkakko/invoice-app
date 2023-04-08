@@ -18,7 +18,9 @@ const InputField: FC<InputFieldProps> = forwardRef<
       {label && (
         <Label htmlFor={name} error={error ? true : false}>
           {label}
-          {error && <Error>{error}</Error>}
+          {error && label !== 'Qty.' && label !== 'Price' && (
+            <Error>{error}</Error>
+          )}
         </Label>
       )}
       <Input

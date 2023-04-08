@@ -20,8 +20,10 @@ interface TotalCardProps {
 
 const TotalCard: FC<TotalCardProps> = ({ invoice }) => {
   const total = invoice.reduce((acc, item) => {
-    return acc + item.total;
+    return acc + item.quantity * item.price;
   }, 0);
+
+  console.log(invoice);
 
   return (
     <Container>

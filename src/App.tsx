@@ -16,7 +16,9 @@ const router = createBrowserRouter(
       <Route path='invoice/:id' element={<DetailLayout />}>
         <Route index element={<InvoiceDetail />} />
         <Route path='edit' element={<InvoiceEdit />} />
-        <Route path='new' element={<NewInvoice />} />
+      </Route>
+      <Route path='/' element={<DetailLayout />}>
+        <Route path='/invoice/new' element={<InvoiceEdit />} />
       </Route>
     </Route>
   )

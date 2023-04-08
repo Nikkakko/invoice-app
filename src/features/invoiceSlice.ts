@@ -3,6 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../app/store';
 import { InvoiceType, Item, InputProps } from '../types/dbTypes';
 import data from '../db/data.json';
+import { addDays, format } from 'date-fns';
 
 // Define a type for the slice state
 interface InitialStateTypes {
@@ -106,10 +107,70 @@ export const invoiceSlice = createSlice({
         });
       }
     },
+
+    saveInvoice: (state, action: PayloadAction<{ item: any }>) => {
+      const { item } = action.payload;
+
+      // Each ID should be 2 random uppercased letters followed by 4 random numbers.
+      const randomId = Math.random().toString(36).substr(2, 4);
+
+      console.log(randomId);
+
+      const paymentDueDate = addDays(
+        new Date(item?.invoiceDate),
+        item?.paymentTerms
+      );
+      const formattedPaymentDueDate = format(paymentDueDate, 'yyyy-MM-dd');
+
+      const newItem = {
+        id: randomId.toString(),
+        createdAt: item.invoiceDate,
+        paymentDue: formattedPaymentDueDate,
+        description: item.projectDescription,
+        paymentTerms: item.paymentTerms,
+        clientName: item.clientName,
+        clientEmail: item.clientEmail,
+        status: 'pending',
+        senderAddress: {
+          street: item.streetAddress,
+          city: item.fromCity,
+          postCode: item.postCode,
+          country: item.country,
+        },
+        clientAddress: {
+          street: item.clientStreetAddress,
+          city: item.clientCity,
+          postCode: item.clientPostCode,
+          country: item.clientCountry,
+        },
+        items: item.items.map((item: Item) => {
+          return {
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+            total: item.quantity * item.price,
+          };
+        }),
+        // map through items and calculate total for each item based on item.quantity * item.price
+        total: item.items.reduce(
+          (acc: number, item: Item) => acc + item.quantity * item.price, // 0 is the initial value
+          0
+        ),
+      };
+
+      state.invoices.push(newItem);
+
+      console.log(item);
+    },
   },
 });
 
-export const { setisEditing, addNewItem, updateInputs, deleteItem } =
-  invoiceSlice.actions;
+export const {
+  setisEditing,
+  addNewItem,
+  updateInputs,
+  deleteItem,
+  saveInvoice,
+} = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;

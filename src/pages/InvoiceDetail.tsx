@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import GoBack from '../components/Buttons/GoBack';
 import { BodyTextVariant, SmallHeadingVariant } from '../styles/globalStyles';
 import { DetailClient } from '../components';
+import DetailFooter from '../components/page/DetailFooter';
 
 const InvoiceDetail = () => {
   const { invoices } = useAppSelector(state => state.invoice);
@@ -30,6 +31,7 @@ const InvoiceDetail = () => {
           </ClientWrapper>
         </>
       )}
+      <DetailFooter />
     </Container>
   );
 };

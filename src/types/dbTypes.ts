@@ -48,4 +48,6 @@ export type InputProps = {
     price: number;
     total: number;
   }[];
+
+  total: number;
 };

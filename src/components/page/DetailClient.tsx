@@ -50,7 +50,7 @@ const DetailClient: FC<DetailClientProps> = ({ invoice }) => {
             <SmallHeadingVariant>{formatedDate}</SmallHeadingVariant>
           </Date>
           <Due>
-            <BodyTextVariant>Payment Date</BodyTextVariant>
+            <BodyTextVariant>Payment Due</BodyTextVariant>
             <SmallHeadingVariant>{formatedDueDate}</SmallHeadingVariant>
           </Due>
         </InvoiceDate>
