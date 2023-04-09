@@ -13,7 +13,7 @@ const DetailLayout = () => {
 
   const handleClick = () => {
     // navigate back
-    navigate(-1);
+    navigate('/');
     // reset isEditing
     dispatch(setisEditing(false));
   };

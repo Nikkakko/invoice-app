@@ -17,7 +17,7 @@ interface InvoicesProps {}
 const Invoices: FC<InvoicesProps> = ({}) => {
   const { invoices } = useAppSelector(state => state.invoice);
   const [status, setStatus] = useState<string | null>(null);
-  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(true);
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

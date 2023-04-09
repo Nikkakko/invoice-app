@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Header, InvoiceCard, Invoices } from '../components';
+import { Header, InvoiceCard, Invoices, NoInvoices } from '../components';
 import { useAppSelector } from '../app/hooks';
 
 const Home = () => {
@@ -10,6 +10,7 @@ const Home = () => {
       {invoices.map(invoice => (
         <InvoiceCard key={invoice.id} invoice={invoice} />
       ))}
+      {invoices.length === 0 && <NoInvoices />}
     </InvocieWrapper>
   );
 };

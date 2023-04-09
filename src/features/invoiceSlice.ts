@@ -30,7 +30,6 @@ export const invoiceSlice = createSlice({
     },
 
     addNewItem: (state, action: PayloadAction<string>) => {
-      // find item based on id and add new item
       const id = action.payload;
       const invoice = state.invoices.find(invoice => invoice.id === id);
       const filteredInvoice = state.invoicesFiltered.find(
@@ -46,7 +45,10 @@ export const invoiceSlice = createSlice({
 
       if (invoice) {
         invoice.items.push(newItem);
-        filteredInvoice?.items.push(newItem);
+      }
+
+      if (filteredInvoice) {
+        filteredInvoice.items.push(newItem);
       }
 
       return state;
@@ -58,25 +60,28 @@ export const invoiceSlice = createSlice({
     ) => {
       const { id, index } = action.payload;
       const findInvoice = state.invoices.find(invoice => invoice.id === id);
+      const findFilteredInvoice = state.invoicesFiltered.find(
+        invoice => invoice.id === id
+      );
+
       if (findInvoice) {
         findInvoice.items.splice(index, 1);
+      }
+
+      if (findFilteredInvoice) {
+        findFilteredInvoice.items.splice(index, 1);
       }
     },
 
     filterItems: (state, action: PayloadAction<{ status: string }>) => {
       const { status } = action.payload;
 
-      // create copy of actual invoice array
-      const invoicesCopy = [...state.invoicesFiltered];
-
       if (status === 'all') {
-        state.invoices = invoicesCopy;
+        state.invoices = state.invoicesFiltered;
       } else {
-        const filteredInvoices = state.invoices.filter(
+        state.invoices = state.invoices.filter(
           invoice => invoice.status === status
         );
-
-        state.invoices = filteredInvoices;
       }
     },
 
@@ -85,10 +90,16 @@ export const invoiceSlice = createSlice({
       action: PayloadAction<{ id: string | undefined; item: InputProps }>
     ) => {
       const { id, item } = action.payload;
+
       const findInvoice = state.invoices.find(invoice => invoice.id === id);
+      const findFilteredInvoice = state.invoicesFiltered.find(
+        invoice => invoice.id === id
+      );
+
       if (findInvoice?.status === 'draft') {
         // set status to pending
         findInvoice.status = 'pending';
+        findFilteredInvoice!.status = 'pending'; // modify filtered invoice too
       }
 
       const {
@@ -124,8 +135,6 @@ export const invoiceSlice = createSlice({
         findInvoice.clientAddress.postCode = clientPostCode;
         findInvoice.clientAddress.country = clientCountry;
 
-        // change filtered invoice
-
         // items
         findInvoice.items = findInvoice.items.map((item, index) => {
           return {
@@ -136,6 +145,15 @@ export const invoiceSlice = createSlice({
             total: items[index].quantity * items[index].price,
           };
         });
+
+        // modify filtered invoice
+        const findIndex = state.invoicesFiltered.findIndex(
+          invoice => invoice.id === id
+        );
+
+        if (findIndex >= 0) {
+          state.invoicesFiltered[findIndex] = findInvoice;
+        }
       }
     },
 
@@ -188,6 +206,7 @@ export const invoiceSlice = createSlice({
       };
 
       state.invoices.push(newItem);
+      state.invoicesFiltered.push(newItem);
     },
 
     saveAsDraft: (state, action: PayloadAction<{ item: InputProps }>) => {
@@ -241,6 +260,7 @@ export const invoiceSlice = createSlice({
       };
 
       state.invoices.push(newItem);
+      state.invoicesFiltered.push(newItem);
     },
 
     updateStatus: (
@@ -248,16 +268,43 @@ export const invoiceSlice = createSlice({
       action: PayloadAction<{ id: string | undefined }>
     ) => {
       const { id } = action.payload;
+
+      // update status for invoice in 'invoices' array
       const findInvoice = state.invoices.find(invoice => invoice.id === id);
       if (findInvoice) {
-        // check if status !== paid
-
         if (findInvoice.status !== 'paid') {
           findInvoice.status = 'paid';
         } else {
           return;
         }
       }
+
+      // update status for invoice in 'invoicesFiltered' array
+      const findFilteredInvoice = state.invoicesFiltered.find(
+        invoice => invoice.id === id
+      );
+      if (findFilteredInvoice) {
+        if (findFilteredInvoice.status !== 'paid') {
+          findFilteredInvoice.status = 'paid';
+        } else {
+          return;
+        }
+      }
+    },
+
+    deleteInvoice: (
+      state,
+      action: PayloadAction<{ id: string | undefined }>
+    ) => {
+      const { id } = action.payload;
+
+      // delete invoice from 'invoices' array
+      state.invoices = state.invoices.filter(invoice => invoice.id !== id);
+
+      // delete invoice from 'invoicesFiltered' array
+      state.invoicesFiltered = state.invoicesFiltered.filter(
+        invoice => invoice.id !== id
+      );
     },
   },
 });
@@ -271,6 +318,7 @@ export const {
   updateStatus,
   saveAsDraft,
   filterItems,
+  deleteInvoice,
 } = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;

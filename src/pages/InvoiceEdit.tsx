@@ -13,6 +13,7 @@ import {
 import { IconPlus } from '../assets';
 import {
   addNewItem,
+  deleteInvoice,
   deleteItem,
   saveAsDraft,
   saveInvoice,

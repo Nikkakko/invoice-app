@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import FooterButton from '../Buttons/FooterButton';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
+  deleteInvoice,
   saveAsDraft,
   saveInvoice,
   setisEditing,
@@ -59,7 +60,8 @@ const DetailFooter: FC<DetailFooterProps> = ({ onSubmit, handleDraft }) => {
       handleDraft && handleDraft();
       navigate('/');
     } else {
-      return 'delete';
+      dispatch(deleteInvoice({ id }));
+      navigate('/');
     }
   };
 
