@@ -9,12 +9,14 @@ import { generateRandomID } from '../helpers/randomId';
 // Define a type for the slice state
 interface InitialStateTypes {
   invoices: InvoiceType[];
+  invoicesFiltered: InvoiceType[];
   isEditing: boolean;
 }
 
 // Define the initial state using that type
 const initialState: InitialStateTypes = {
   invoices: data,
+  invoicesFiltered: data,
   isEditing: false,
 };
 
@@ -31,6 +33,9 @@ export const invoiceSlice = createSlice({
       // find item based on id and add new item
       const id = action.payload;
       const invoice = state.invoices.find(invoice => invoice.id === id);
+      const filteredInvoice = state.invoicesFiltered.find(
+        invoice => invoice.id === id
+      );
 
       const newItem = {
         name: '',
@@ -41,6 +46,7 @@ export const invoiceSlice = createSlice({
 
       if (invoice) {
         invoice.items.push(newItem);
+        filteredInvoice?.items.push(newItem);
       }
 
       return state;
@@ -54,6 +60,23 @@ export const invoiceSlice = createSlice({
       const findInvoice = state.invoices.find(invoice => invoice.id === id);
       if (findInvoice) {
         findInvoice.items.splice(index, 1);
+      }
+    },
+
+    filterItems: (state, action: PayloadAction<{ status: string }>) => {
+      const { status } = action.payload;
+
+      // create copy of actual invoice array
+      const invoicesCopy = [...state.invoicesFiltered];
+
+      if (status === 'all') {
+        state.invoices = invoicesCopy;
+      } else {
+        const filteredInvoices = state.invoices.filter(
+          invoice => invoice.status === status
+        );
+
+        state.invoices = filteredInvoices;
       }
     },
 
@@ -100,6 +123,8 @@ export const invoiceSlice = createSlice({
         findInvoice.clientAddress.city = clientCity;
         findInvoice.clientAddress.postCode = clientPostCode;
         findInvoice.clientAddress.country = clientCountry;
+
+        // change filtered invoice
 
         // items
         findInvoice.items = findInvoice.items.map((item, index) => {
@@ -245,6 +270,7 @@ export const {
   saveInvoice,
   updateStatus,
   saveAsDraft,
+  filterItems,
 } = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;

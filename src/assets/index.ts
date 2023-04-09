@@ -7,3 +7,4 @@ export { default as ArrowLeft } from './icon-arrow-left.svg';
 export { default as CalendarIcon } from './icon-calendar.svg';
 export { default as DeleteIcon } from './icon-delete.svg';
 export { default as IconDelete } from './icon-delete.svg';
+export { default as IconCheck } from './icon-check.svg';
