@@ -1,15 +1,22 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import styled from 'styled-components';
 import FooterButton from '../Buttons/FooterButton';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { saveInvoice, setisEditing } from '../../features/invoiceSlice';
+import {
+  saveAsDraft,
+  saveInvoice,
+  setisEditing,
+  updateStatus,
+} from '../../features/invoiceSlice';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { current } from '@reduxjs/toolkit';
 
 interface DetailFooterProps {
   onSubmit?: () => void;
+  handleDraft?: () => void;
 }
 
-const DetailFooter: FC<DetailFooterProps> = ({ onSubmit }) => {
+const DetailFooter: FC<DetailFooterProps> = ({ onSubmit, handleDraft }) => {
   const { isDarkMode } = useAppSelector(state => state.theme);
   const { isEditing } = useAppSelector(state => state.invoice);
   const dispatch = useAppDispatch();
@@ -21,30 +28,61 @@ const DetailFooter: FC<DetailFooterProps> = ({ onSubmit }) => {
   const editBgColor = isDarkMode ? '#252945' : '#F9FAFE';
   const editColor = isDarkMode ? '#DFE3FA' : '#7E88C3';
 
-  const handleNavigate = (id: string) => {
-    // navigate to edit page with the current invoice ID
-    navigate(`/invoice/${id}/edit`);
-    dispatch(setisEditing(true));
-  };
+  console.log(isEditing);
 
+  const handleNavigate = (id: string) => {
+    if (isEditing) {
+      navigate(`/invoice/${id}`);
+    } else {
+      navigate(`/invoice/${id}/edit`);
+      dispatch(setisEditing(true));
+    }
+    // navigate to edit page with the current invoice ID
+  };
   const handleSaveOrPaid = () => {
     if (isEditing && onSubmit) {
       onSubmit();
     }
 
-    if (currentPath === 'new') {
-      onSubmit && onSubmit();
+    if (!isEditing && currentPath !== 'new') {
+      handleStatusUpdate();
+      navigate('/');
+    }
+
+    if (currentPath === 'new' && onSubmit) {
+      onSubmit();
     }
   };
 
+  const handleDeleteAndDraft = () => {
+    if (currentPath === 'new') {
+      handleDraft && handleDraft();
+      navigate('/');
+    } else {
+      return 'delete';
+    }
+  };
+
+  function handleStatusUpdate() {
+    dispatch(updateStatus({ id }));
+  }
+
   const bgColor = currentPath === 'new' ? '#373B53' : '#EC5757';
   const color = currentPath === 'new' && isDarkMode ? '#DFE3FA' : '#888EB0';
+
+  useEffect(() => {
+    if (currentPath === 'new' || currentPath !== 'edit') {
+      dispatch(setisEditing(false));
+    } else {
+      dispatch(setisEditing(true));
+    }
+  }, []);
 
   return (
     <Container>
       <FooterButton
         title={
-          isEditing ? 'Edit' : currentPath === 'new' ? 'Discard' : 'Cancel'
+          !isEditing ? 'Edit' : currentPath === 'new' ? 'Discard' : 'Cancel'
         }
         bgColor={editBgColor}
         color={editColor}
@@ -55,12 +93,13 @@ const DetailFooter: FC<DetailFooterProps> = ({ onSubmit }) => {
         <FooterButton
           title={currentPath === 'new' ? 'Save as Draft' : 'Delete'}
           bgColor={bgColor}
-          color={color || '#ffffff'}
+          color={currentPath === 'new' ? color : '#ffffff'}
           padding={
             currentPath === 'new'
               ? '18px 13px 15px 16px'
               : '18px 25px 15px 24px'
           }
+          onClick={handleDeleteAndDraft}
         />
       )}
       <FooterButton

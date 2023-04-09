@@ -31,6 +31,7 @@ const DetailLayout = () => {
 const Container = styled.div``;
 
 const Main = styled.main`
+  /* background: ${({ theme }) => theme.colors.background}; */
   /* margin-top: 26px; */
 `;
 

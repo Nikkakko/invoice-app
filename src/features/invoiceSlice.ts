@@ -4,6 +4,7 @@ import type { RootState } from '../app/store';
 import { InvoiceType, Item, InputProps } from '../types/dbTypes';
 import data from '../db/data.json';
 import { addDays, format } from 'date-fns';
+import { generateRandomID } from '../helpers/randomId';
 
 // Define a type for the slice state
 interface InitialStateTypes {
@@ -62,6 +63,11 @@ export const invoiceSlice = createSlice({
     ) => {
       const { id, item } = action.payload;
       const findInvoice = state.invoices.find(invoice => invoice.id === id);
+      if (findInvoice?.status === 'draft') {
+        // set status to pending
+        findInvoice.status = 'pending';
+      }
+
       const {
         streetAddress,
         fromCity,
@@ -108,13 +114,11 @@ export const invoiceSlice = createSlice({
       }
     },
 
-    saveInvoice: (state, action: PayloadAction<{ item: any }>) => {
+    saveInvoice: (state, action: PayloadAction<{ item: InputProps }>) => {
       const { item } = action.payload;
 
       // Each ID should be 2 random uppercased letters followed by 4 random numbers.
-      const randomId = Math.random().toString(36).substr(2, 4);
-
-      console.log(randomId);
+      const randomId = generateRandomID();
 
       const paymentDueDate = addDays(
         new Date(item?.invoiceDate),
@@ -123,7 +127,7 @@ export const invoiceSlice = createSlice({
       const formattedPaymentDueDate = format(paymentDueDate, 'yyyy-MM-dd');
 
       const newItem = {
-        id: randomId.toString(),
+        id: randomId,
         createdAt: item.invoiceDate,
         paymentDue: formattedPaymentDueDate,
         description: item.projectDescription,
@@ -159,8 +163,76 @@ export const invoiceSlice = createSlice({
       };
 
       state.invoices.push(newItem);
+    },
 
-      console.log(item);
+    saveAsDraft: (state, action: PayloadAction<{ item: InputProps }>) => {
+      const { item } = action.payload;
+
+      // Each ID should be 2 random uppercased letters followed by 4 random numbers.
+      const randomId = generateRandomID();
+
+      const paymentDueDate = item.invoiceDate
+        ? addDays(new Date(item.invoiceDate), item.paymentTerms)
+        : null;
+
+      const formattedPaymentDueDate = paymentDueDate
+        ? format(paymentDueDate, 'yyyy-MM-dd')
+        : null;
+
+      const newItem = {
+        id: randomId,
+        createdAt: item.invoiceDate || '',
+        paymentDue: formattedPaymentDueDate || '',
+        description: item.projectDescription || '',
+        paymentTerms: item.paymentTerms || 0,
+        clientName: item.clientName || '',
+        clientEmail: item.clientEmail || '',
+        status: 'draft',
+        senderAddress: {
+          street: item.streetAddress || '',
+          city: item.fromCity || '',
+          postCode: item.postCode || '',
+          country: item.country || '',
+        },
+        clientAddress: {
+          street: item.clientStreetAddress || '',
+          city: item.clientCity || '',
+          postCode: item.clientPostCode || '',
+          country: item.clientCountry || '',
+        },
+        items: item.items.map((item: Item) => {
+          return {
+            name: item.name || '',
+            quantity: item.quantity || 0,
+            price: item.price || 0,
+            total: item.quantity * item.price || 0,
+          };
+        }),
+        // map through items and calculate total for each item based on item.quantity * item.price
+        total: item.items.reduce(
+          (acc: number, item: Item) => acc + item.quantity * item.price, // 0 is the initial value
+          0
+        ),
+      };
+
+      state.invoices.push(newItem);
+    },
+
+    updateStatus: (
+      state,
+      action: PayloadAction<{ id: string | undefined }>
+    ) => {
+      const { id } = action.payload;
+      const findInvoice = state.invoices.find(invoice => invoice.id === id);
+      if (findInvoice) {
+        // check if status !== paid
+
+        if (findInvoice.status !== 'paid') {
+          findInvoice.status = 'paid';
+        } else {
+          return;
+        }
+      }
     },
   },
 });
@@ -171,6 +243,8 @@ export const {
   updateInputs,
   deleteItem,
   saveInvoice,
+  updateStatus,
+  saveAsDraft,
 } = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;

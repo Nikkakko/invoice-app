@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { SmallHeadingVariant } from '../styles/globalStyles';
@@ -14,6 +14,7 @@ import { IconPlus } from '../assets';
 import {
   addNewItem,
   deleteItem,
+  saveAsDraft,
   saveInvoice,
   setisEditing,
   updateInputs,
@@ -36,6 +37,7 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
   const currentInvoice = invoices.find(item => item.id === id);
   const location = useLocation();
   const currentLocation = location.pathname.split('/')[2];
+  const navigate = useNavigate();
 
   //get current path
 
@@ -120,6 +122,7 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
   function handleSaveInvoice() {
     const data = getValues();
     dispatch(saveInvoice({ item: data }));
+    navigate('/');
   }
 
   useEffect(() => {
@@ -127,6 +130,11 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
       dispatch(setisEditing(true));
     }
   }, []);
+
+  function handleDraft() {
+    const data = getValues();
+    dispatch(saveAsDraft({ item: data }));
+  }
 
   return (
     <Container>
@@ -330,7 +338,10 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
           Please add at least one item
         </Error>
       )}
-      <DetailFooter onSubmit={handleSubmit(onSubmit)} />
+      <DetailFooter
+        onSubmit={handleSubmit(onSubmit)}
+        handleDraft={handleDraft}
+      />
     </Container>
   );
 };
