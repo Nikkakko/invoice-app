@@ -23,8 +23,6 @@ const TotalCard: FC<TotalCardProps> = ({ invoice }) => {
     return acc + item.quantity * item.price;
   }, 0);
 
-  console.log(invoice);
-
   return (
     <Container>
       <TotalWrapper>

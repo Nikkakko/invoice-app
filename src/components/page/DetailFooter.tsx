@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import FooterButton from '../Buttons/FooterButton';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -11,6 +11,7 @@ import {
 } from '../../features/invoiceSlice';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { current } from '@reduxjs/toolkit';
+import DeleteModal from '../DeleteModal';
 
 interface DetailFooterProps {
   onSubmit?: () => void;
@@ -20,6 +21,7 @@ interface DetailFooterProps {
 const DetailFooter: FC<DetailFooterProps> = ({ onSubmit, handleDraft }) => {
   const { isDarkMode } = useAppSelector(state => state.theme);
   const { isEditing } = useAppSelector(state => state.invoice);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -28,8 +30,6 @@ const DetailFooter: FC<DetailFooterProps> = ({ onSubmit, handleDraft }) => {
 
   const editBgColor = isDarkMode ? '#252945' : '#F9FAFE';
   const editColor = isDarkMode ? '#DFE3FA' : '#7E88C3';
-
-  console.log(isEditing);
 
   const handleNavigate = (id: string) => {
     if (isEditing) {
@@ -60,9 +60,13 @@ const DetailFooter: FC<DetailFooterProps> = ({ onSubmit, handleDraft }) => {
       handleDraft && handleDraft();
       navigate('/');
     } else {
-      dispatch(deleteInvoice({ id }));
-      navigate('/');
+      setIsModalOpen(true);
     }
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteInvoice({ id }));
+    navigate('/');
   };
 
   function handleStatusUpdate() {
@@ -118,6 +122,12 @@ const DetailFooter: FC<DetailFooterProps> = ({ onSubmit, handleDraft }) => {
           currentPath === 'new' ? '18px 15px 15px 16px' : '18px 28px 15px 27px'
         }
         onClick={handleSaveOrPaid}
+      />
+      <DeleteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onDelete={handleDelete}
+        id={id as string}
       />
     </Container>
   );
