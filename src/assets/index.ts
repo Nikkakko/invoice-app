@@ -9,3 +9,4 @@ export { default as DeleteIcon } from './icon-delete.svg';
 export { default as IconDelete } from './icon-delete.svg';
 export { default as IconCheck } from './icon-check.svg';
 export { default as EmptyIllustration } from './illustration-empty.svg';
+export { default as ArrowRight } from './icon-arrow-right.svg';

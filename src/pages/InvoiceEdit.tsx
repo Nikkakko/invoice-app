@@ -27,10 +27,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import ArrowDown from '../svgs/ArrowDown';
 import DetailFooter from '../components/page/DetailFooter';
 import { SelectField } from '../components';
+import { device } from '../styles/mediaQureis';
 
-interface InvoiceEditProps {}
+interface InvoiceEditProps {
+  isSidebar?: boolean | undefined;
+  newInvoice?: boolean | undefined;
+}
 
-const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
+const InvoiceEdit: FC<InvoiceEditProps> = ({ isSidebar, newInvoice }) => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const { invoices, isEditing } = useAppSelector(state => state.invoice);
@@ -127,7 +131,7 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
   }
 
   useEffect(() => {
-    if (currentLocation !== 'new') {
+    if (currentLocation !== 'new' && !newInvoice) {
       dispatch(setisEditing(true));
     }
   }, []);
@@ -138,7 +142,7 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
   }
 
   return (
-    <Container>
+    <Container isSidebar={isSidebar}>
       <TitleWrapper>
         <Title>
           {isEditing ? `Edit #${currentInvoice?.id}` : 'New Invoice'}
@@ -332,7 +336,7 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
           Add New Item
         </AddneItemBtn>
       </AddneItem>
-      <GrayContainer />
+      {/* <GrayContainer /> */}
 
       {itemError && fields.length === 0 && (
         <Error style={{ position: 'absolute', bottom: '100px' }}>
@@ -342,22 +346,28 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({}) => {
       <DetailFooter
         onSubmit={handleSubmit(onSubmit)}
         handleDraft={handleDraft}
+        isSidebar={isSidebar}
+        newInvoice={newInvoice}
       />
     </Container>
   );
 };
 
-const Container = styled.div`
+const Container = styled.div<{
+  isSidebar: boolean | undefined;
+}>`
   display: flex;
   flex-direction: column;
   margin-top: 26px;
-`;
+  /* padding: 0 32px; */
 
-const StyledCalendar = styled(Calendar)`
-  width: 300px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  padding: 16px;
+  position: ${({ isSidebar }) => (isSidebar ? 'relative' : 'none')};
+
+  //device
+  @media ${device.tablet} {
+    margin-top: 0;
+    // make scrollable through the container
+  }
 `;
 
 const GrayContainer = styled.div`
@@ -442,6 +452,7 @@ const ItemList = styled.div`
   flex-direction: column;
   margin-top: 69px;
 `;
+2;
 
 const Item = styled.div`
   margin-top: 33px;
@@ -545,6 +556,8 @@ const Select = styled.select<{
 
   //remove arrow
   -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 
   border-radius: 4px;
 

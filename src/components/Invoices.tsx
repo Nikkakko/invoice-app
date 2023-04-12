@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import {
@@ -10,14 +10,20 @@ import ArrowDown from '../svgs/ArrowDown';
 import Button from './Buttons/Button';
 import { IconCheck, IconPlus } from '../assets';
 import { useNavigate } from 'react-router-dom';
-import { filterItems } from '../features/invoiceSlice';
+import { filterItems, setisEditSidebarOpen } from '../features/invoiceSlice';
+import { device } from '../styles/mediaQureis';
+import NewSidebar from './Sidebar/NewSidebar';
+import EditSidebar from './Sidebar/EditSidebar';
 
 interface InvoicesProps {}
 
 const Invoices: FC<InvoicesProps> = ({}) => {
-  const { invoices } = useAppSelector(state => state.invoice);
+  const { invoices, isEditSidebarOpen } = useAppSelector(
+    state => state.invoice
+  );
   const [status, setStatus] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -29,7 +35,11 @@ const Invoices: FC<InvoicesProps> = ({}) => {
   ];
 
   const handleNewInvoice = () => {
-    navigate('/invoice/new');
+    if (isMobile) {
+      navigate('/invoice/new');
+    } else {
+      dispatch(setisEditSidebarOpen(true));
+    }
   };
 
   const handleStatusChange = (value: string) => {
@@ -43,17 +53,28 @@ const Invoices: FC<InvoicesProps> = ({}) => {
     }
   };
 
+  useEffect(() => {
+    if (window.innerWidth <= 767) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  }, [isMobile]);
+
   return (
     <Container>
       <InvoicesWrapper>
         <MediumHeading>Invoices</MediumHeading>
-        <BodyTextVariant>{invoices.length} Invoices</BodyTextVariant>
+        <BodyTextVariant>
+          <TabletHide>There are </TabletHide>
+          {invoices.length} Invoices
+        </BodyTextVariant>
       </InvoicesWrapper>
 
       <RightWrapper>
         <FilterWrapper>
           <SmallHeadingVariant onClick={() => setIsFilterOpen(prev => !prev)}>
-            Filter
+            Filter <TabletHide>by status</TabletHide>
           </SmallHeadingVariant>
           <ArrowDown />
         </FilterWrapper>
@@ -65,6 +86,7 @@ const Invoices: FC<InvoicesProps> = ({}) => {
           bg='#7C5DFA'
           color='#fff'
           radius='24px'
+          padding='8px 17px 8px 8px'
         />
       </RightWrapper>
 
@@ -86,6 +108,8 @@ const Invoices: FC<InvoicesProps> = ({}) => {
           ))}
         </CheckboxContainer>
       )}
+
+      {isEditSidebarOpen && <EditSidebar newInvoice />}
     </Container>
   );
 };
@@ -106,6 +130,10 @@ const RightWrapper = styled.div`
 const InvoicesWrapper = styled.div`
   display: flex;
   flex-direction: column;
+
+  @media ${device.tablet} {
+    gap: 6px;
+  }
 `;
 
 const FilterWrapper = styled.div`
@@ -180,6 +208,14 @@ const CheckboxLabel = styled.label`
   /* 08 */
 
   color: ${({ theme }) => theme.colors.primary};
+`;
+
+const TabletHide = styled.span`
+  display: none;
+
+  @media ${device.tablet} {
+    display: inline;
+  }
 `;
 
 export default Invoices;

@@ -7,6 +7,8 @@ import {
   SmallHeadingVariant,
 } from '../styles/globalStyles';
 import { useNavigate } from 'react-router-dom';
+import { device } from '../styles/mediaQureis';
+import { ArrowRight } from '../svgs';
 
 interface InvoiceCardProps {
   invoice: InvoiceType;
@@ -26,17 +28,25 @@ const InvoiceCard: FC<InvoiceCardProps> = ({ invoice }) => {
           <HashTag>#</HashTag>
           {invoice.id}
         </SmallHeadingVariant>
+        <TabletHide>
+          <BodyTextVariant>Due {invoice.paymentDue}</BodyTextVariant>
+        </TabletHide>
         <BodyTextVariant>{invoice.clientName}</BodyTextVariant>
       </ClientWrapper>
 
       <InfoWrapper>
         <DatePaidWrapper>
-          <BodyTextVariant>Due {invoice.paymentDue}</BodyTextVariant>
+          <MobileHide>
+            <BodyTextVariant>Due {invoice.paymentDue}</BodyTextVariant>
+          </MobileHide>
           <SmallHeading>£ {invoice.total}</SmallHeading>
         </DatePaidWrapper>
         <Status status={invoice.status}>
           <StatusText color={invoice.status}>{invoice.status}</StatusText>
         </Status>
+        <TabletHide>
+          <ArrowRight />
+        </TabletHide>
       </InfoWrapper>
     </Container>
   );
@@ -49,7 +59,18 @@ const Container = styled.div`
   padding: 25px 24px 22px 24px;
   width: 100%;
 
+  // first element margin top 16px
+
   cursor: pointer;
+
+  @media ${device.tablet} {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 24px;
+  }
 `;
 
 const HashTag = styled.span`
@@ -59,17 +80,52 @@ const HashTag = styled.span`
 const ClientWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+
+  @media ${device.tablet} {
+    align-items: center;
+    // first chaild margin-left 28px  second child margin-left 51px
+    & > *:nth-child(2) {
+      margin-left: 28px;
+    }
+
+    & > *:nth-child(3) {
+      margin-left: 51px;
+    }
+  }
 `;
 
 const InfoWrapper = styled.div`
   margin-top: 24px;
   display: flex;
   justify-content: space-between;
+
+  @media ${device.tablet} {
+    align-items: center;
+
+    margin-left: 82px;
+    margin-top: 0;
+
+    & > *:nth-child(1) {
+    }
+
+    & > *:nth-child(2) {
+      margin-left: 40px;
+    }
+
+    & > *:nth-child(3) {
+      margin-left: 20px;
+    }
+  }
 `;
 
 const DatePaidWrapper = styled.div`
   display: flex;
   flex-direction: column;
+
+  @media ${device.tablet} {
+    flex-direction: row;
+    align-items: center;
+  }
 `;
 
 const StatusText = styled(SmallHeadingVariant)<{ color: string }>`
@@ -119,6 +175,25 @@ const Status = styled.div<{
         ? '#F59E0B'
         : '#373B53'};
     opacity: 0.06;
+  }
+
+  @media ${device.tablet} {
+  }
+`;
+
+const TabletHide = styled.div`
+  display: none;
+
+  @media ${device.tablet} {
+    display: block;
+  }
+`;
+
+const MobileHide = styled.div`
+  display: block;
+
+  @media ${device.tablet} {
+    display: none;
   }
 `;
 

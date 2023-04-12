@@ -7,6 +7,7 @@ import {
 } from '../../styles/globalStyles';
 import { formatDate } from '../../helpers/formatDate';
 import TotalCard from './TotalCard';
+import { device } from '../../styles/mediaQureis';
 
 interface DetailClientProps {
   invoice: InvoiceType;
@@ -43,35 +44,36 @@ const DetailClient: FC<DetailClientProps> = ({ invoice }) => {
         </SenderWrapper>
       </PersonalInfo>
 
-      <InvoiceWrapper>
-        <InvoiceDate>
-          <Date>
-            <BodyTextVariant>Invoice Date</BodyTextVariant>
-            <SmallHeadingVariant>{formatedDate}</SmallHeadingVariant>
-          </Date>
-          <Due>
-            <BodyTextVariant>Payment Due</BodyTextVariant>
-            <SmallHeadingVariant>{formatedDueDate}</SmallHeadingVariant>
-          </Due>
-        </InvoiceDate>
-        <BillTo>
-          <Bill>
-            <BodyTextVariant>Bill To</BodyTextVariant>
-            <SmallHeadingVariant>{invoice.clientName}</SmallHeadingVariant>
-          </Bill>
-          <BillAddress>
-            <ClientText>{street}</ClientText>
-            <ClientText>{city}</ClientText>
-            <ClientText>{postCode}</ClientText>
-            <ClientText>{country}</ClientText>
-          </BillAddress>
-        </BillTo>
-      </InvoiceWrapper>
-
-      <SentTo>
-        <BodyTextVariant>Sent to</BodyTextVariant>
-        <SentText>{invoice.clientEmail}</SentText>
-      </SentTo>
+      <TabletWrapper>
+        <InvoiceWrapper>
+          <InvoiceDate>
+            <Date>
+              <BodyTextVariant>Invoice Date</BodyTextVariant>
+              <SmallHeadingVariant>{formatedDate}</SmallHeadingVariant>
+            </Date>
+            <Due>
+              <BodyTextVariant>Payment Due</BodyTextVariant>
+              <SmallHeadingVariant>{formatedDueDate}</SmallHeadingVariant>
+            </Due>
+          </InvoiceDate>
+          <BillTo>
+            <Bill>
+              <BodyTextVariant>Bill To</BodyTextVariant>
+              <SmallHeadingVariant>{invoice.clientName}</SmallHeadingVariant>
+            </Bill>
+            <BillAddress>
+              <ClientText>{street}</ClientText>
+              <ClientText>{city}</ClientText>
+              <ClientText>{postCode}</ClientText>
+              <ClientText>{country}</ClientText>
+            </BillAddress>
+          </BillTo>
+        </InvoiceWrapper>
+        <SentTo>
+          <BodyTextVariant>Sent to</BodyTextVariant>
+          <SentText>{invoice.clientEmail}</SentText>
+        </SentTo>
+      </TabletWrapper>
 
       <TotalCard invoice={invoice.items} />
     </ClientWrapper>
@@ -87,6 +89,10 @@ const ClientWrapper = styled.div`
   border-radius: 8px;
 
   padding: 25px 24px;
+
+  @media ${device.tablet} {
+    padding: 33px 32px;
+  }
 `;
 
 const Hashtag = styled.span`
@@ -97,12 +103,21 @@ const PersonalInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+
+  @media ${device.tablet} {
+    flex-direction: row;
+    justify-content: space-between;
+  }
 `;
 
 const ClientInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+
+  @media ${device.tablet} {
+    gap: 7px;
+  }
 `;
 
 const SenderWrapper = styled.div`
@@ -118,6 +133,19 @@ const InvoiceWrapper = styled.div`
   display: flex;
   margin-top: 31px;
   gap: 61px;
+
+  @media ${device.tablet} {
+    gap: 119px;
+    margin-top: 0;
+  }
+`;
+
+const TabletWrapper = styled.div`
+  @media ${device.tablet} {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 21px;
+  }
 `;
 
 const InvoiceDate = styled.div`
@@ -161,6 +189,11 @@ const SentTo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 13px;
+
+  @media ${device.tablet} {
+    margin-top: 0;
+    margin-left: 117px;
+  }
 `;
 
 const SentText = styled(SmallHeadingVariant)`

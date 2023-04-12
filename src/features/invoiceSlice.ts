@@ -11,6 +11,7 @@ interface InitialStateTypes {
   invoices: InvoiceType[];
   invoicesFiltered: InvoiceType[];
   isEditing: boolean;
+  isEditSidebarOpen: boolean;
 }
 
 // Define the initial state using that type
@@ -18,6 +19,7 @@ const initialState: InitialStateTypes = {
   invoices: data,
   invoicesFiltered: data,
   isEditing: false,
+  isEditSidebarOpen: false,
 };
 
 export const invoiceSlice = createSlice({
@@ -27,6 +29,14 @@ export const invoiceSlice = createSlice({
   reducers: {
     setisEditing: (state, action: PayloadAction<boolean>) => {
       state.isEditing = action.payload;
+    },
+
+    setisEditSidebarOpen: (state, action: PayloadAction<boolean>) => {
+      state.isEditSidebarOpen = action.payload;
+    },
+
+    toggleEditSidebar: state => {
+      state.isEditSidebarOpen = !state.isEditSidebarOpen;
     },
 
     addNewItem: (state, action: PayloadAction<string>) => {
@@ -102,6 +112,14 @@ export const invoiceSlice = createSlice({
         findFilteredInvoice!.status = 'pending'; // modify filtered invoice too
       }
 
+      const paymentDueDate = item.invoiceDate
+        ? addDays(new Date(item.invoiceDate), item.paymentTerms)
+        : null;
+
+      const formattedPaymentDueDate = paymentDueDate
+        ? format(paymentDueDate, 'yyyy-MM-dd')
+        : null;
+
       const {
         streetAddress,
         fromCity,
@@ -122,7 +140,7 @@ export const invoiceSlice = createSlice({
       if (findInvoice) {
         // loop and change
         findInvoice.createdAt = invoiceDate;
-        findInvoice.paymentDue = paymentDue;
+        findInvoice.paymentDue = formattedPaymentDueDate as string;
         findInvoice.description = projectDescription;
         findInvoice.senderAddress.street = streetAddress;
         findInvoice.senderAddress.city = fromCity;
@@ -319,6 +337,8 @@ export const {
   saveAsDraft,
   filterItems,
   deleteInvoice,
+  setisEditSidebarOpen,
+  toggleEditSidebar,
 } = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;

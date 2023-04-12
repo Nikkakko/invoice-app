@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { EmptyIllustration } from '../assets';
 import styled from 'styled-components';
 import { BodyTextVariant, MediumHeading } from '../styles/globalStyles';
+import { device } from '../styles/mediaQureis';
 
 interface NoInvoicesProps {}
 
@@ -30,6 +31,12 @@ const Container = styled.div`
   img {
     width: 193px;
   }
+
+  @media ${device.tablet} {
+    img {
+      width: 241px;
+    }
+  }
 `;
 
 const Wrapper = styled.div`
@@ -43,6 +50,10 @@ const Wrapper = styled.div`
 
   p {
     max-width: 200px;
+  }
+
+  @media ${device.tablet} {
+    margin-top: 66px;
   }
 `;
 
