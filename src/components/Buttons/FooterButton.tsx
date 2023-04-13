@@ -44,6 +44,10 @@ const Button = styled.button`
   letter-spacing: -0.25px;
 
   cursor: pointer;
+
+  &:hover {
+    opacity: 0.6;
+  }
 `;
 
 const TitleText = styled(SmallHeadingVariant)`

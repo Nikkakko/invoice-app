@@ -30,6 +30,12 @@ const StyledButton = styled.button`
 
   border: none;
   background: none;
+
+  h3 {
+    &:hover {
+      color: #7e88c3;
+    }
+  }
 `;
 
 const IconImg = styled.img``;

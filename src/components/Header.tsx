@@ -4,6 +4,7 @@ import { Avatar, Logo } from '../assets';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { toggleTheme } from '../features/themeSlice';
 import { MoonIcon, SunIcon } from '../svgs';
+import { device } from '../styles/mediaQureis';
 
 interface HeaderProps {}
 
@@ -42,6 +43,17 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media ${device.tablet} {
+  }
+
+  @media ${device.laptopL} {
+    height: 100%;
+    width: 103px;
+    flex-direction: column;
+
+    border-radius: 0px 20px 20px 0px;
+  }
 `;
 
 const LogoWrapper = styled.div`
@@ -64,6 +76,24 @@ const LogoWrapper = styled.div`
     transform: matrix(-1, 0, 0, 1, 0, 0);
     left: 0;
     top: 36.35px;
+
+    @media ${device.laptopL} {
+      width: 103px;
+      height: 52px;
+      top: 51.5px;
+      border-radius: 0px 20px 0px 20px;
+      transform: matrix(-1, 0, 0, 1, 0, 0);
+    }
+  }
+
+  @media ${device.laptopL} {
+    width: 103px;
+    height: 103px;
+
+    img {
+      width: 40px;
+      height: 40px;
+    }
   }
 `;
 
@@ -92,6 +122,10 @@ const ToggleThemeButton = styled.div`
   svg {
     cursor: pointer;
   }
+
+  @media ${device.laptopL} {
+    flex-direction: column;
+  }
 `;
 
 const UserMenu = styled.div`
@@ -99,18 +133,32 @@ const UserMenu = styled.div`
   align-items: center;
   justify-content: center;
   /* padding: 0 24px; */
+
+  @media ${device.laptopL} {
+    padding: 24px 0;
+  }
 `;
 
 const AvatarImage = styled.img`
   width: 32px;
   height: 32px;
   border-radius: 50%;
+
+  @media ${device.laptopL} {
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const Line = styled.div`
   width: 1px;
   height: 72px;
   background: #494e6e;
+
+  @media ${device.laptopL} {
+    width: 103px;
+    height: 1px;
+  }
 `;
 
 export default Header;

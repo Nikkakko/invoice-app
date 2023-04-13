@@ -190,7 +190,13 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({ isSidebar, newInvoice }) => {
           error={errors.clientName?.message}
         />
         <InputeField
-          {...register('clientEmail', { required: "can't be empty" })}
+          {...register('clientEmail', {
+            required: "can't be empty",
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: 'invalid email address',
+            },
+          })}
           label='Client Email'
           name='clientEmail'
           error={errors.clientEmail?.message}

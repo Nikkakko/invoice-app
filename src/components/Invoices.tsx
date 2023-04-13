@@ -7,12 +7,12 @@ import {
   SmallHeadingVariant,
 } from '../styles/globalStyles';
 import ArrowDown from '../svgs/ArrowDown';
+
 import Button from './Buttons/Button';
 import { IconCheck, IconPlus } from '../assets';
 import { useNavigate } from 'react-router-dom';
 import { filterItems, setisEditSidebarOpen } from '../features/invoiceSlice';
 import { device } from '../styles/mediaQureis';
-import NewSidebar from './Sidebar/NewSidebar';
 import EditSidebar from './Sidebar/EditSidebar';
 
 interface InvoicesProps {}
@@ -72,11 +72,11 @@ const Invoices: FC<InvoicesProps> = ({}) => {
       </InvoicesWrapper>
 
       <RightWrapper>
-        <FilterWrapper>
-          <SmallHeadingVariant onClick={() => setIsFilterOpen(prev => !prev)}>
+        <FilterWrapper onClick={() => setIsFilterOpen(prev => !prev)}>
+          <SmallHeadingVariant>
             Filter <TabletHide>by status</TabletHide>
           </SmallHeadingVariant>
-          <ArrowDown />
+          <ArrowDown isFilterOpen={isFilterOpen} />
         </FilterWrapper>
 
         <Button
@@ -87,6 +87,7 @@ const Invoices: FC<InvoicesProps> = ({}) => {
           color='#fff'
           radius='24px'
           padding='8px 17px 8px 8px'
+          hoverBg='#9277FF'
         />
       </RightWrapper>
 
@@ -125,6 +126,13 @@ const RightWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 18.54px;
+
+  @media ${device.tablet} {
+  }
+
+  @media ${device.laptopL} {
+    gap: 40.54px;
+  }
 `;
 
 const InvoicesWrapper = styled.div`
@@ -133,6 +141,13 @@ const InvoicesWrapper = styled.div`
 
   @media ${device.tablet} {
     gap: 6px;
+  }
+
+  @media ${device.laptopL} {
+    h2 {
+      font-size: 36px;
+      line-height: 33px;
+    }
   }
 `;
 
@@ -158,6 +173,29 @@ const CheckboxContainer = styled.div`
   position: absolute;
   left: 50px;
   top: 80px;
+
+  @media ${device.tablet} {
+    left: 350px;
+    top: 120px;
+  }
+
+  @media ${device.laptopL} {
+    left: 48%;
+  }
+
+  // animate to appear from top to bottom
+
+  @keyframes appear {
+    0% {
+      transform: translateY(-50px);
+    }
+
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  animation: appear 0.3s ease-in-out;
 `;
 
 const CheckboxWrapper = styled.div`

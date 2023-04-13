@@ -93,6 +93,10 @@ const ClientWrapper = styled.div`
   @media ${device.tablet} {
     padding: 33px 32px;
   }
+
+  @media ${device.laptopL} {
+    padding: 49px 48px;
+  }
 `;
 
 const Hashtag = styled.span`
@@ -145,6 +149,10 @@ const TabletWrapper = styled.div`
     display: flex;
     align-items: flex-start;
     margin-top: 21px;
+  }
+
+  @media ${device.laptopL} {
+    /* margin-top: 0px; */
   }
 `;
 

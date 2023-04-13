@@ -38,6 +38,11 @@ const Wrapper = styled.div`
     grid-template-columns: repeat(auto-fit, minmax(572px, 1fr));
     margin-top: 55px;
   }
+
+  @media ${device.laptopL} {
+    grid-template-columns: repeat(auto-fit, minmax(700px, 1fr));
+    margin-top: 64px;
+  }
 `;
 
 export default Home;

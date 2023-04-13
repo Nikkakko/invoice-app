@@ -70,6 +70,11 @@ const Container = styled.div`
     justify-content: space-between;
 
     padding: 16px 24px;
+
+    &:hover {
+      border: 1px solid #7c5dfa;
+      box-shadow: 0px 10px 10px -10px rgba(72, 84, 159, 0.100397);
+    }
   }
 `;
 
@@ -90,6 +95,16 @@ const ClientWrapper = styled.div`
 
     & > *:nth-child(3) {
       margin-left: 51px;
+    }
+  }
+
+  @media ${device.laptopL} {
+    & > *:nth-child(2) {
+      margin-left: 44px;
+    }
+
+    & > *:nth-child(3) {
+      margin-left: 59px;
     }
   }
 `;

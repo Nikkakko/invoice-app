@@ -11,6 +11,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   color?: string;
   radius?: string;
   padding?: string;
+  hoverBg?: string;
 }
 
 const Button: FC<ButtonProps> = ({
@@ -20,6 +21,7 @@ const Button: FC<ButtonProps> = ({
   color,
   radius,
   padding,
+  hoverBg,
   ...props
 }) => {
   return (
@@ -32,6 +34,7 @@ const Button: FC<ButtonProps> = ({
       }}
       {...props}
       onClick={props.onClick}
+      hoverBg={hoverBg}
     >
       {icon && (
         <IconWrapper>
@@ -45,11 +48,19 @@ const Button: FC<ButtonProps> = ({
   );
 };
 
-const StyledButton = styled.button`
+const StyledButton = styled.button<{
+  hoverBg?: string;
+}>`
   border: none;
   gap: 8px;
   display: flex;
   align-items: center;
+
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ hoverBg }) => hoverBg} !important;
+  }
 
   @media ${device.tablet} {
     gap: 16px;

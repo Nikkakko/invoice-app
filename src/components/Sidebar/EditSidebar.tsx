@@ -9,6 +9,7 @@ import {
   setisEditing,
 } from '../../features/invoiceSlice';
 import DetailFooter from '../page/DetailFooter';
+import { device } from '../../styles/mediaQureis';
 
 interface EditSidebarProps {
   newInvoice?: boolean;
@@ -67,6 +68,11 @@ const Container = styled.div`
 
   background: ${({ theme }) => theme.colors.background};
   border-radius: 0px 20px 20px 0px;
+
+  @media ${device.laptopL} {
+    left: 100px;
+    width: 616px;
+  }
 `;
 
 const Overlay = styled.div`
@@ -77,6 +83,13 @@ const Overlay = styled.div`
   right: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 100;
+
+  @media ${device.tablet} {
+  }
+
+  @media ${device.laptopL} {
+    left: 100px;
+  }
 `;
 
 export default EditSidebar;

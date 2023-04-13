@@ -29,7 +29,7 @@ const InvoiceDetail = () => {
                 {currentInvoice.status}
               </StatusText>
             </Status>
-            <TabletShow></TabletShow>
+            <TabletShow />
           </StatusCard>
 
           <ClientWrapper>
@@ -49,6 +49,13 @@ const InvoiceDetail = () => {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+
+  @media ${device.tablet} {
+  }
+
+  @media ${device.laptopL} {
+    width: 730px;
+  }
 `;
 
 const StatusCard = styled.div`
@@ -80,6 +87,9 @@ const StatusCard = styled.div`
       background: transparent;
       box-shadow: none;
     }
+  }
+
+  @media ${device.laptopL} {
   }
 `;
 

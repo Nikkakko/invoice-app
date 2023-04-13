@@ -37,6 +37,11 @@ const Container = styled.div`
       width: 241px;
     }
   }
+
+  @media ${device.laptopL} {
+    justify-content: center;
+    margin-top: 140px;
+  }
 `;
 
 const Wrapper = styled.div`

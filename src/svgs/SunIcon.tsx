@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import styled from 'styled-components';
 
 interface SunIconProps {
   onClick?: () => void;
@@ -6,7 +7,7 @@ interface SunIconProps {
 
 const SunIcon: FC<SunIconProps> = ({ onClick }) => {
   return (
-    <svg
+    <Svg
       width='20'
       height='20'
       xmlns='http://www.w3.org/2000/svg'
@@ -17,8 +18,28 @@ const SunIcon: FC<SunIconProps> = ({ onClick }) => {
         fill='#858BB2'
         fillRule='nonzero'
       />
-    </svg>
+    </Svg>
   );
 };
+
+const Svg = styled.svg`
+  cursor: pointer;
+
+  // animate sun icon on appear to rotate 360deg over 1s and then stop
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  &:hover {
+    animation: infinite 2s linear rotate;
+  }
+`;
 
 export default SunIcon;

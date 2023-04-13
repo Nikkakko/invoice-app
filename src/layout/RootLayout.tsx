@@ -18,6 +18,14 @@ const Container = styled.div`
   width: 100vw;
   height: 100vh;
   /* background: ${({ theme }) => theme.colors.white}; */
+
+  @media ${device.tablet} {
+  }
+
+  @media ${device.laptopL} {
+    display: flex;
+    flex-direction: row;
+  }
 `;
 
 const Main = styled.main`
@@ -30,6 +38,12 @@ const Main = styled.main`
 
   @media ${device.tablet} {
     padding: 61px 48px 173px 48px;
+  }
+
+  @media ${device.laptopL} {
+    /* padding: 77px 355px 0 252px; */
+    align-items: center;
+    width: 100%;
   }
 `;
 

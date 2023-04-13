@@ -64,7 +64,6 @@ const DetailFooter: FC<DetailFooterProps> = ({
 
     if ((!isEditing && currentPath !== 'new') || newInvoice) {
       handleStatusUpdate();
-      navigate('/');
     }
 
     if (currentPath === 'new' || (newInvoice && onSubmit)) {
@@ -75,7 +74,6 @@ const DetailFooter: FC<DetailFooterProps> = ({
   const handleDeleteAndDraft = () => {
     if (currentPath === 'new' || newInvoice) {
       handleDraft && handleDraft();
-      navigate('/');
     } else {
       setIsModalOpen(true);
     }
@@ -137,7 +135,7 @@ const DetailFooter: FC<DetailFooterProps> = ({
           bgColor={bgColor}
           color={currentPath === 'new' || newInvoice ? color : '#ffffff'}
           padding={
-            currentPath === 'new'
+            currentPath === 'new' || newInvoice
               ? '18px 13px 15px 16px'
               : '18px 25px 15px 24px'
           }
@@ -190,6 +188,12 @@ const Container = styled.div<{
 
   @media ${device.tablet} {
     border-radius: 0px 20px 20px 0px;
+  }
+
+  @media ${device.laptopL} {
+    padding: 21px 50px;
+    left: 100px;
+    max-width: 616px;
   }
 `;
 

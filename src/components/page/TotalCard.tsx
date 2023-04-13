@@ -91,6 +91,10 @@ const TotalWrapper = styled.div`
     margin-top: 47px;
     padding: 0px 32px 39px 32px;
   }
+
+  @media ${device.laptopL} {
+    padding: 0px 32px 0px 32px;
+  }
 `;
 
 const BannerDesign = styled.div`
@@ -166,6 +170,12 @@ const TotalText = styled.h1`
   letter-spacing: -0.1px;
 
   color: #ffffff;
+
+  @media ${device.tablet} {
+  }
+
+  @media ${device.laptopL} {
+  }
 `;
 
 const TotalPrice = styled.h1`
