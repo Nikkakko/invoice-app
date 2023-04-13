@@ -23,4 +23,4 @@ Your users should be able to:
 
 ## Screenshots
 
-![Desktop preview](./preview.jpg)
+![Desktop preview](./public/preview.jpg)
