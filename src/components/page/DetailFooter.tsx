@@ -108,8 +108,6 @@ const DetailFooter: FC<DetailFooterProps> = ({
     }
   }, [isEditSidebarOpen]);
 
-  console.log(isEditing, newInvoice);
-
   return (
     <Container isSidebar={isSidebar}>
       <FooterButton
