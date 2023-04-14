@@ -31,7 +31,7 @@ const InvoiceCard: FC<InvoiceCardProps> = ({ invoice }) => {
         <TabletHide>
           <BodyTextVariant>Due {invoice.paymentDue}</BodyTextVariant>
         </TabletHide>
-        <BodyTextVariant>{invoice.clientName}</BodyTextVariant>
+        <ClientNameText>{invoice.clientName}</ClientNameText>
       </ClientWrapper>
 
       <InfoWrapper>
@@ -107,6 +107,10 @@ const ClientWrapper = styled.div`
       margin-left: 59px;
     }
   }
+`;
+
+const ClientNameText = styled(BodyTextVariant)`
+  text-transform: capitalize;
 `;
 
 const InfoWrapper = styled.div`
