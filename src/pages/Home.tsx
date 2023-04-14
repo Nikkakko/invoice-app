@@ -42,6 +42,7 @@ const Wrapper = styled.div`
   @media ${device.laptopL} {
     grid-template-columns: repeat(auto-fit, minmax(700px, 1fr));
     margin-top: 64px;
+    margin-bottom: 64px;
   }
 `;
 

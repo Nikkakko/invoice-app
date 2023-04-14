@@ -49,10 +49,11 @@ const Container = styled.div`
 
   @media ${device.laptopL} {
     height: 100%;
+    position: fixed;
     width: 103px;
     flex-direction: column;
-
     border-radius: 0px 20px 20px 0px;
+    border: 1px solid red;
   }
 `;
 

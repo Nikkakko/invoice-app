@@ -126,8 +126,15 @@ const InvoiceEdit: FC<InvoiceEditProps> = ({ isSidebar, newInvoice }) => {
 
   function handleSaveInvoice() {
     const data = getValues();
-    dispatch(saveInvoice({ item: data }));
-    navigate('/');
+
+    if (data.items.length === 0) {
+      setItemError(true);
+      return;
+    } else {
+      setItemError(false);
+      dispatch(saveInvoice({ item: data }));
+      navigate('/');
+    }
   }
 
   useEffect(() => {

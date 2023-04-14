@@ -2,10 +2,17 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header } from '../components';
 import { device } from '../styles/mediaQureis';
+import { useAppSelector } from '../app/hooks';
+import { useEffect } from 'react';
 
 const RootLayout = () => {
+  const { isEditSidebarOpen } = useAppSelector(state => state.invoice);
   return (
-    <Container>
+    <Container
+      style={{
+        overflow: isEditSidebarOpen ? 'hidden' : 'auto',
+      }}
+    >
       <Header />
       <Main>
         <Outlet />
